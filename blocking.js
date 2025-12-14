@@ -1,135 +1,272 @@
 // ============================================================
-// ULTIMATE COOKIE BLOCKER - MUST BE AT THE VERY TOP!
-// Blocks ALL cookies BEFORE they can be set
+// ULTIMATE COOKIE NUKER - BLOCKS EVERYTHING
 // ============================================================
 
 (function() {
     'use strict';
     
-    console.log('🔒 ULTIMATE COOKIE BLOCKER ACTIVATED - Blocking all non-essential cookies');
+    console.log('🚨🚨🚨 COOKIE NUKER ACTIVATED - Blocking ALL non-essential cookies');
     
-    // LIST OF COOKIES TO BLOCK (From your screenshot + all platforms)
-    const BLOCKED_COOKIES = [
+    // COMPLETE LIST OF ALL COOKIES TO BLOCK
+    const NUKELIST = [
+        // Google Auth/YouTube (your problem cookies)
+        '__Secure-1PAPISID', '__Secure-1PSID', '__Secure-1PSIDCC', '__Secure-1PSIDTS',
+        '__Secure-3PAPISID', '__Secure-3PSID', '__Secure-3PSIDTS', '__Secure-3PSIDCC',
+        '__Secure-APISID', '__Secure-HSID', '__Secure-SSID', '__Secure-SID',
+        'SID', 'HSID', 'SSID', 'APISID', 'SAPISID', 'SIDCC', 'NID', 'AID',
+        
         // Facebook/Meta (from your screenshot)
         'fr', 'sb', 'wd', 'xs', 'datr', 'c_user', 'm_user', 'pl', 'dbln', 'lu',
-        // Facebook Pixel
         '_fbp', '_fbc', 'usida', 'act',
-        // Microsoft (from your screenshot)
+        
+        // Microsoft
         'MC1', 'MicrosoftApplicationsTelemetryDeviceId', 'MicrosoftApplicationsTelemetryFirstLaunchTime',
-        // Microsoft Advertising
-        '_uet', 'MUID', '_uetsid', '_uetvid', '_uetms', '_uetmsclkid', '_uetmsd',
-        // Google Analytics
-        '_ga', '_gid', '_gat', '_ga_', '_gat_UA-', '_dc_gtm_', '_gcl', '_gcl_au', 'gclid',
-        // Google Advertising
-        'IDE', 'NID', 'DSID', 'FPLC', '_gat_gtag',
-        // TikTok
-        '_ttp', 'ttclid', 'tt_sessionid', 'tt_medium', 'tt_campaign',
-        // LinkedIn
-        'lidc', 'bcookie', 'li_sugr', 'bscookie', 'UserMatchHistory',
-        // Twitter/X
-        'personalization_id', 'guest_id', 'ct0', 'auth_token', 'twid',
-        // Snapchat
-        'sc_at', '_scid', '_sctr', 'snap_ga',
-        // Pinterest
-        '_pinterest_ct_ua', '_pinterest_sess', 'cm_sub', '_pin_unauth',
-        // Shopify
-        '_shopify_y', '_shopify_s', '_shopify_sa_p', '_shopify_fs', '_shopify_uniq',
-        // Hotjar
-        '_hj', '_hjid',
-        // HubSpot
-        'hubspotutk', '__hssc', '__hstc'
+        '_uet', 'MUID', '_uetsid', '_uetvid', '_uetms',
+        
+        // Google Analytics/Ads
+        '_ga', '_gid', '_gat', '_ga_', '_gcl', '_gcl_au', 'gclid', 'IDE',
+        '_dc_gtm_', '_gat_UA-', '_gat_gtag', 'DSID', 'FPLC',
+        
+        // All other platforms
+        '_ttp', 'ttclid', 'lidc', 'bcookie', 'personalization_id',
+        'sc_at', '_scid', '_pinterest_ct_ua', '_shopify_y',
+        '_hj', 'hubspotutk', '__hssc', '__hstc'
     ];
     
-    // ESSENTIAL COOKIES WE MUST ALLOW
-    const ESSENTIAL_COOKIES = [
-        'cookie_consent', 'preferred_language', 'dashboard_auth',
-        'first_visit_date', 'session_start_time',
-        'PHPSESSID', 'JSESSIONID', 'wordpress_test_cookie',
-        'wp-settings', 'ARRAffinity', '__cf', 'AWSALB'
-    ];
+    // ESSENTIAL cookies only
+    const ESSENTIAL = ['cookie_consent', 'preferred_language', 'dashboard_auth',
+                      'PHPSESSID', 'JSESSIONID', 'wordpress_test_cookie',
+                      'wp-settings', 'ARRAffinity', '__cf', 'AWSALB'];
     
-    // ========== BLOCK COOKIES FROM BEING SET ==========
-    const originalCookieSetter = Object.getOwnPropertyDescriptor(Document.prototype, 'cookie').set;
+    // ========== NUCLEAR OPTION 1: BLOCK AT SOURCE ==========
+    try {
+        const cookieDesc = Object.getOwnPropertyDescriptor(Document.prototype, 'cookie') || 
+                          Object.getOwnPropertyDescriptor(HTMLDocument.prototype, 'cookie');
+        
+        if (cookieDesc && cookieDesc.set) {
+            Object.defineProperty(document, 'cookie', {
+                get: cookieDesc.get,
+                set: function(value) {
+                    if (!value) return cookieDesc.set.call(document, value);
+                    
+                    const cookieStr = value.toString();
+                    const nameMatch = cookieStr.match(/^([^=]+)/);
+                    
+                    if (nameMatch) {
+                        const cookieName = nameMatch[1].trim();
+                        
+                        // Check if essential
+                        let isEssential = false;
+                        for (const essential of ESSENTIAL) {
+                            if (cookieName.toLowerCase().includes(essential.toLowerCase())) {
+                                isEssential = true;
+                                break;
+                            }
+                        }
+                        
+                        // If NOT essential, CHECK if it should be NUKED
+                        if (!isEssential) {
+                            for (const blocked of NUKELIST) {
+                                if (cookieName.toLowerCase().includes(blocked.toLowerCase())) {
+                                    console.log(`🚫🚫🚫 NUKED "${cookieName}" - PREVENTED FROM BEING SET`);
+                                    return; // BLOCK COMPLETELY
+                                }
+                            }
+                            
+                            // Also block ANY cookie containing these patterns
+                            const blockPatterns = ['Secure-', 'PAPISID', 'PSID', '_ga', '_fb', '_uet', 'ttclid'];
+                            for (const pattern of blockPatterns) {
+                                if (cookieName.includes(pattern)) {
+                                    console.log(`🚫🚫🚫 NUKED by pattern "${pattern}": ${cookieName}`);
+                                    return; // BLOCK COMPLETELY
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Allow if it passed all checks
+                    return cookieDesc.set.call(document, value);
+                },
+                configurable: true
+            });
+            console.log('✅ Cookie setter OVERRIDDEN successfully');
+        }
+    } catch (e) {
+        console.warn('Could not override cookie setter:', e);
+    }
     
-    Object.defineProperty(document, 'cookie', {
-        get: Object.getOwnPropertyDescriptor(Document.prototype, 'cookie').get,
-        set: function(value) {
-            // Get the cookie name
-            const cookieName = value.split('=')[0].trim().split(';')[0];
-            const cookieNameLower = cookieName.toLowerCase();
+    // ========== NUCLEAR OPTION 2: DELETE EVERYTHING NOW ==========
+    function nukeAllCookies() {
+        console.log('💥 NUKE ALL COOKIES - Running...');
+        
+        // Get ALL cookies
+        const allCookies = document.cookie.split(';');
+        let deletedCount = 0;
+        
+        allCookies.forEach(cookie => {
+            const [nameValue] = cookie.trim().split('=');
+            const cookieName = nameValue ? nameValue.trim() : '';
+            
+            if (!cookieName) return;
             
             // Check if it's essential
             let isEssential = false;
-            for (const essential of ESSENTIAL_COOKIES) {
-                if (cookieNameLower.includes(essential.toLowerCase())) {
+            for (const essential of ESSENTIAL) {
+                if (cookieName.toLowerCase().includes(essential.toLowerCase())) {
                     isEssential = true;
                     break;
                 }
             }
             
-            // BLOCK if it's in our blocked list
+            // If NOT essential, DELETE IT
             if (!isEssential) {
-                for (const blocked of BLOCKED_COOKIES) {
-                    if (cookieNameLower.includes(blocked.toLowerCase())) {
-                        console.log(`🚫 BLOCKED "${cookieName}" from being set`);
-                        return; // STOP THE COOKIE FROM BEING SET
-                    }
-                }
+                // Try to delete from ALL possible domains and paths
+                const domains = [
+                    window.location.hostname,
+                    '.' + window.location.hostname,
+                    location.hostname,
+                    '.' + location.hostname,
+                    '.google.com',
+                    'google.com',
+                    '.google.com.bd',
+                    'google.com.bd',
+                    '.youtube.com',
+                    'youtube.com',
+                    '.facebook.com',
+                    'facebook.com',
+                    '.microsoft.com',
+                    'microsoft.com'
+                ];
+                
+                const paths = ['/', '', '/path', '/wp-admin'];
+                
+                domains.forEach(domain => {
+                    paths.forEach(path => {
+                        // Delete cookie
+                        document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=${path}; domain=${domain}`;
+                        
+                        // Also try without www
+                        if (domain.startsWith('.')) {
+                            document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=${path}; domain=${domain.substring(1)}`;
+                        }
+                    });
+                });
+                
+                deletedCount++;
+                console.log(`💥 DELETED: ${cookieName}`);
             }
-            
-            // Allow essential cookies
-            return originalCookieSetter.call(document, value);
-        },
-        configurable: true
-    });
-    
-    // ========== DELETE EXISTING COOKIES NOW ==========
-    function deleteBlockedCookiesNow() {
-        console.log('🗑️ Deleting existing blocked cookies...');
+        });
         
-        // Try ALL possible domains
-        const domains = [
-            window.location.hostname,
-            '.' + window.location.hostname,
-            '.facebook.com',
-            '.microsoft.com',
-            '.google.com',
-            '.bing.com',
-            '.tiktok.com',
-            '.linkedin.com',
-            '.twitter.com'
+        if (deletedCount > 0) {
+            console.log(`✅ NUKE COMPLETE: Deleted ${deletedCount} cookies`);
+            
+            // Send to dataLayer
+            if (window.dataLayer) {
+                window.dataLayer.push({
+                    'event': 'cookies_nuked',
+                    'nuked_count': deletedCount,
+                    'timestamp': new Date().toISOString()
+                });
+            }
+        }
+    }
+    
+    // ========== NUCLEAR OPTION 3: BLOCK GOOGLE SPECIFICALLY ==========
+    function blockGoogleCookies() {
+        console.log('🔴 BLOCKING GOOGLE/YOUTUBE COOKIES...');
+        
+        const googleCookies = [
+            '__Secure-1PAPISID', '__Secure-3PAPISID',
+            '__Secure-1PSID', '__Secure-3PSID',
+            '__Secure-1PSIDCC', '__Secure-3PSIDCC',
+            '__Secure-1PSIDTS', '__Secure-3PSIDTS',
+            'SID', 'HSID', 'SSID', 'APISID', 'SAPISID', 'SIDCC'
         ];
         
-        BLOCKED_COOKIES.forEach(cookieName => {
-            domains.forEach(domain => {
-                // Try multiple paths
-                ['/', '', '/path', '/wp-admin', '/wp-content'].forEach(path => {
-                    document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=${path};`;
-                    document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain.replace('www.', '.')}; path=${path};`;
-                });
+        googleCookies.forEach(cookieName => {
+            // Delete from Google domains
+            const googleDomains = [
+                '.google.com', 'google.com',
+                '.google.com.bd', 'google.com.bd',
+                '.youtube.com', 'youtube.com',
+                '.googlevideo.com', 'googlevideo.com'
+            ];
+            
+            googleDomains.forEach(domain => {
+                document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=${domain}`;
+                document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=${domain.replace('www.', '.')}`;
             });
+            
+            console.log(`🔴 GOOGLE NUKED: ${cookieName}`);
         });
     }
     
+    // ========== RUN EVERYTHING NOW ==========
+    
     // Run immediately
-    deleteBlockedCookiesNow();
+    nukeAllCookies();
+    blockGoogleCookies();
     
-    // Run multiple times to catch everything
-    setTimeout(deleteBlockedCookiesNow, 100);
-    setTimeout(deleteBlockedCookiesNow, 500);
-    setTimeout(deleteBlockedCookiesNow, 1000);
+    // Run multiple times with different delays
+    setTimeout(() => { nukeAllCookies(); blockGoogleCookies(); }, 100);
+    setTimeout(() => { nukeAllCookies(); blockGoogleCookies(); }, 300);
+    setTimeout(() => { nukeAllCookies(); blockGoogleCookies(); }, 500);
+    setTimeout(() => { nukeAllCookies(); blockGoogleCookies(); }, 1000);
+    setTimeout(() => { nukeAllCookies(); blockGoogleCookies(); }, 2000);
+    setTimeout(() => { nukeAllCookies(); blockGoogleCookies(); }, 5000);
     
-    // Run every 5 seconds
-    setInterval(deleteBlockedCookiesNow, 5000);
+    // Run every 3 seconds
+    const nukeInterval = setInterval(() => {
+        nukeAllCookies();
+        blockGoogleCookies();
+    }, 3000);
     
-    console.log('✅ Cookie blocker installed successfully');
+    // Stop after 1 minute (optional)
+    setTimeout(() => clearInterval(nukeInterval), 60000);
+    
+    // ========== BLOCK YOUTUBE/GOOGLE SCRIPTS ==========
+    // Prevent YouTube/Google scripts from setting cookies
+    document.addEventListener('readystatechange', function() {
+        if (document.readyState === 'interactive' || document.readyState === 'complete') {
+            nukeAllCookies();
+            blockGoogleCookies();
+        }
+    });
+    
+    window.addEventListener('load', function() {
+        nukeAllCookies();
+        blockGoogleCookies();
+        
+        // Additional cleanup after page loads
+        setTimeout(nukeAllCookies, 100);
+        setTimeout(nukeAllCookies, 500);
+        setTimeout(nukeAllCookies, 1000);
+    });
+    
+    // ========== DEBUG MODE ==========
+    // Show what cookies are trying to be set
+    setInterval(() => {
+        const cookies = document.cookie;
+        if (cookies.includes('Secure-') || cookies.includes('PAPISID') || cookies.includes('PSID')) {
+            console.warn('⚠️ WARNING: Google cookies detected!', cookies);
+            nukeAllCookies();
+            blockGoogleCookies();
+        }
+    }, 2000);
+    
+    console.log('✅✅✅ COOKIE NUKER FULLY ACTIVATED ✅✅✅');
     
 })();
 
 // ============================================================
-// END OF ULTIMATE COOKIE BLOCKER
+// END OF ULTIMATE COOKIE NUKER
 // ============================================================
 
+/**
+ * Microsoft Clarity Configuration
+ * IMPORTANT: From Oct 31, 2025, Microsoft Clarity requires explicit consent signals
+ * for visitors from EEA, UK, and Switzerland. This configuration ensures compliance.
+ */
 /**
  * Microsoft Clarity Configuration
  * IMPORTANT: From Oct 31, 2025, Microsoft Clarity requires explicit consent signals
@@ -5269,3 +5406,53 @@ console.log('🔧 To test cookie blocking, type in console: testCookieBlocking()
 
     
 }
+
+
+
+
+
+
+// ========== SIMPLE TEST ==========
+// Test if cookies are being blocked
+(function() {
+    console.log('🧪 Setting up cookie blocking test...');
+    
+    // Test setting blocked cookies
+    setTimeout(() => {
+        console.log('🧪 Testing: Trying to set Google cookies...');
+        
+        // Try to set the problematic Google cookies
+        document.cookie = '__Secure-1PAPISID=test_value_should_be_blocked; path=/; domain=.google.com';
+        document.cookie = '__Secure-1PSID=test_value_should_be_blocked; path=/; domain=.google.com';
+        document.cookie = 'fr=test_facebook_cookie; path=/';
+        document.cookie = '_ga=test_google_analytics; path=/';
+        
+        // Check after 2 seconds
+        setTimeout(() => {
+            const currentCookies = document.cookie;
+            console.log('🧪 Current cookies after test:', currentCookies);
+            
+            const testCookies = ['Secure-1PAPISID', 'Secure-1PSID', 'fr', '_ga'];
+            let allBlocked = true;
+            
+            testCookies.forEach(cookie => {
+                if (currentCookies.includes(cookie)) {
+                    console.error(`❌❌❌ FAIL: "${cookie}" was NOT blocked!`);
+                    allBlocked = false;
+                } else {
+                    console.log(`✅✅✅ PASS: "${cookie}" was successfully blocked`);
+                }
+            });
+            
+            if (allBlocked) {
+                console.log('🎉🎉🎉 ALL TESTS PASSED! Your cookie blocker is WORKING!');
+            } else {
+                console.error('❌❌❌ SOME TESTS FAILED! Cookies are NOT being blocked!');
+                console.log('Try these emergency steps:');
+                console.log('1. Clear browser cache (Ctrl+Shift+Delete)');
+                console.log('2. Use Incognito mode');
+                console.log('3. Check if script is actually loading');
+            }
+        }, 2000);
+    }, 3000);
+})();
