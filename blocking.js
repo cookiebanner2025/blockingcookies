@@ -1,4 +1,252 @@
+// ============================================================
+// ULTIMATE COOKIE BLOCKER - MUST BE AT THE VERY TOP!
+// ============================================================
 
+// BLOCK ALL COOKIES IMMEDIATELY
+(function() {
+    'use strict';
+    
+    console.log('🔒 ULTIMATE COOKIE BLOCKER ACTIVATED');
+    
+    // 1. OVERRIDE document.cookie SETTER - Blocks cookies from being set
+    const originalCookieDescriptor = Object.getOwnPropertyDescriptor(Document.prototype, 'cookie') ||
+                                    Object.getOwnPropertyDescriptor(HTMLDocument.prototype, 'cookie');
+    
+    if (originalCookieDescriptor) {
+        Object.defineProperty(document, 'cookie', {
+            get: function() {
+                return originalCookieDescriptor.get.call(document);
+            },
+            set: function(value) {
+                // List of ESSENTIAL cookies we MUST allow
+                const essentialCookies = [
+                    'cookie_consent',
+                    'preferred_language',
+                    'dashboard_auth',
+                    'first_visit_date',
+                    'session_start_time',
+                    'OptanonConsent',
+                    'CookieConsent',
+                    'PHPSESSID',
+                    'JSESSIONID',
+                    'wordpress_test_cookie',
+                    'wp-settings',
+                    'ARRAffinity',
+                    '__cf',
+                    'AWSALB'
+                ];
+                
+                // Extract cookie name
+                const cookieName = value.split('=')[0].trim().split(';')[0];
+                const cookieNameLower = cookieName.toLowerCase();
+                
+                // Check if this is an essential cookie
+                let isEssential = false;
+                for (const essential of essentialCookies) {
+                    if (cookieNameLower.includes(essential.toLowerCase())) {
+                        isEssential = true;
+                        break;
+                    }
+                }
+                
+                // BLOCK ALL NON-ESSENTIAL COOKIES
+                if (!isEssential) {
+                    console.log(`🚫 BLOCKED cookie from being set: ${cookieName}`, value);
+                    
+                    // Log to dataLayer for tracking
+                    if (window.dataLayer) {
+                        window.dataLayer.push({
+                            'event': 'cookie_blocked_pre_set',
+                            'cookie_name': cookieName,
+                            'timestamp': new Date().toISOString(),
+                            'full_value': value.substring(0, 100) + (value.length > 100 ? '...' : '')
+                        });
+                    }
+                    
+                    return false; // BLOCK THE COOKIE
+                }
+                
+                // Allow essential cookies
+                console.log(`✅ ALLOWED essential cookie: ${cookieName}`);
+                return originalCookieDescriptor.set.call(document, value);
+            },
+            configurable: true
+        });
+    }
+    
+    // 2. BLOCK SPECIFIC PLATFORM SCRIPTS BEFORE THEY LOAD
+    const blockedDomains = [
+        'connect.facebook.net',
+        'www.facebook.com/tr',
+        'clarity.ms',
+        'www.google-analytics.com',
+        'www.googletagmanager.com',
+        'bat.bing.com',
+        'analytics.tiktok.com',
+        'px.ads.linkedin.com',
+        'snap.licdn.com',
+        'tr.snapchat.com',
+        'px.ads.linkedin.com',
+        't.co',
+        'analytics.twitter.com'
+    ];
+    
+    // Override window.fetch to block tracking requests
+    const originalFetch = window.fetch;
+    window.fetch = function(url, options) {
+        if (typeof url === 'string') {
+            for (const domain of blockedDomains) {
+                if (url.includes(domain)) {
+                    console.log(`🚫 BLOCKED fetch request to: ${domain}`);
+                    return Promise.reject(new Error(`Blocked tracking request to ${domain}`));
+                }
+            }
+        }
+        return originalFetch.apply(this, arguments);
+    };
+    
+    // 3. BLOCK SPECIFIC SCRIPT TAGS BEFORE THEY LOAD
+    const originalCreateElement = document.createElement;
+    document.createElement = function(tagName) {
+        const element = originalCreateElement.call(document, tagName);
+        
+        if (tagName.toLowerCase() === 'script') {
+            const originalSrcSetter = Object.getOwnPropertyDescriptor(HTMLScriptElement.prototype, 'src');
+            if (originalSrcSetter) {
+                Object.defineProperty(element, 'src', {
+                    set: function(value) {
+                        for (const domain of blockedDomains) {
+                            if (value && value.includes(domain)) {
+                                console.log(`🚫 BLOCKED script from loading: ${domain}`);
+                                
+                                // Still set src but add a blocker
+                                originalSrcSetter.set.call(this, 'data:application/javascript,console.log("Script blocked by cookie blocker");');
+                                
+                                // Dispatch error event so scripts think they loaded
+                                setTimeout(() => {
+                                    if (this.onerror) this.onerror(new Error('Script blocked'));
+                                }, 10);
+                                
+                                return;
+                            }
+                        }
+                        originalSrcSetter.set.call(this, value);
+                    },
+                    get: function() {
+                        return originalSrcSetter.get.call(this);
+                    }
+                });
+            }
+        }
+        return element;
+    };
+    
+    // 4. DELETE EXISTING NON-ESSENTIAL COOKIES IMMEDIATELY
+    function deleteAllNonEssentialCookies() {
+        const cookies = document.cookie.split(';');
+        const essentialPatterns = [
+            /cookie_consent/i,
+            /preferred_language/i,
+            /dashboard_auth/i,
+            /first_visit_date/i,
+            /session_start_time/i,
+            /PHPSESSID/i,
+            /JSESSIONID/i,
+            /wordpress_test_cookie/i,
+            /wp-settings/i,
+            /ARRAffinity/i,
+            /__cf/i,
+            /AWSALB/i
+        ];
+        
+        cookies.forEach(cookie => {
+            const [name] = cookie.trim().split('=');
+            if (name) {
+                const cookieName = name.trim();
+                let isEssential = false;
+                
+                for (const pattern of essentialPatterns) {
+                    if (pattern.test(cookieName)) {
+                        isEssential = true;
+                        break;
+                    }
+                }
+                
+                // BLOCKED PATTERNS - Your specific cookies
+                const blockedPatterns = [
+                    /^fr$/i,           // Facebook
+                    /^MC1$/i,          // Microsoft
+                    /^MicrosoftApplicationsTelemetry/i, // Microsoft
+                    /^sb$/i,           // Facebook
+                    /^wd$/i,           // Facebook
+                    /^xs$/i,           // Facebook
+                    /^_fbp$/i,         // Facebook Pixel
+                    /^_ga$/i,          // Google Analytics
+                    /^_gid$/i,         // Google Analytics
+                    /^_gcl/i,          // Google Ads
+                    /^_uet/i,          // Microsoft UET
+                    /^MUID$/i,         // Microsoft
+                    /^_ttp$/i,         // TikTok
+                    /^ttclid$/i,       // TikTok
+                    /^lidc$/i,         // LinkedIn
+                    /^bcookie$/i,      // LinkedIn
+                    /^personalization_id$/i // Twitter
+                ];
+                
+                let shouldDelete = false;
+                for (const pattern of blockedPatterns) {
+                    if (pattern.test(cookieName)) {
+                        shouldDelete = true;
+                        break;
+                    }
+                }
+                
+                if (!isEssential || shouldDelete) {
+                    // Delete from all possible paths and domains
+                    const domains = [
+                        window.location.hostname,
+                        '.' + window.location.hostname,
+                        '.facebook.com',
+                        '.microsoft.com',
+                        '.google.com',
+                        '.tiktok.com',
+                        '.linkedin.com',
+                        '.twitter.com'
+                    ];
+                    
+                    const paths = ['/', '/path', ''];
+                    
+                    domains.forEach(domain => {
+                        paths.forEach(path => {
+                            document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=${path};`;
+                            document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain.replace('www.', '.')}; path=${path};`;
+                        });
+                    });
+                    
+                    console.log(`🗑️ DELETED existing cookie: ${cookieName}`);
+                }
+            }
+        });
+    }
+    
+    // Run immediately
+    deleteAllNonEssentialCookies();
+    
+    // Run again after page load
+    window.addEventListener('load', function() {
+        setTimeout(deleteAllNonEssentialCookies, 100);
+        setTimeout(deleteAllNonEssentialCookies, 1000);
+        setTimeout(deleteAllNonEssentialCookies, 5000);
+    });
+    
+    // Run periodically
+    setInterval(deleteAllNonEssentialCookies, 10000);
+    
+})();
+
+// ============================================================
+// END OF ULTIMATE COOKIE BLOCKER
+// ============================================================
 /**
  * Microsoft Clarity Configuration
  * IMPORTANT: From Oct 31, 2025, Microsoft Clarity requires explicit consent signals
@@ -80,6 +328,36 @@ function isEEAVisitor() {
 
 
 const config = {
+
+
+    // ========== AGGRESSIVE BLOCKING CONFIG ==========
+    aggressiveBlocking: {
+        enabled: true, // Set to TRUE to enable nuclear option
+        blockAllThirdParty: true,
+        deleteExisting: true,
+        blockScripts: true,
+        blockFetches: true,
+        // Specific platforms to target
+        targetPlatforms: {
+            facebook: true,
+            google: true,
+            microsoft: true,
+            tiktok: true,
+            linkedin: true,
+            twitter: true,
+            snapchat: true,
+            pinterest: true
+        },
+        // Your specific problematic cookies from the image
+        problemCookies: ['fr', 'MC1', 'MicrosoftApplicationsTelemetryDeviceId', 
+                        'MicrosoftApplicationsTelemetryFirstLaunchTime', 'sb', 'wd', 'xs']
+    },
+
+
+
+
+
+  
     // Domain restriction
     allowedDomains: [],
     
@@ -637,6 +915,82 @@ if (typeof window.uetq === 'undefined') {
 }
 
 function gtag() { dataLayer.push(arguments); }
+
+
+
+// ========== NUCLEAR COOKIE BLOCKER ==========
+function nuclearCookieBlocker() {
+    if (!config.aggressiveBlocking || !config.aggressiveBlocking.enabled) return;
+    
+    console.log('☢️ NUCLEAR COOKIE BLOCKER ACTIVATED');
+    
+    // Block ALL the cookies from your screenshot
+    const nuclearList = [
+        'fr', 'MC1', 'MicrosoftApplicationsTelemetryDeviceId',
+        'MicrosoftApplicationsTelemetryFirstLaunchTime', 'sb', 'wd', 'xs',
+        '_fbp', '_fbc', 'datr', 'c_user', 'm_user', 'pl', 'dbln',
+        '_gcl', '_gcl_au', 'gclid', 'IDE', 'NID', '_gat_gtag',
+        '_uetmsdns', 'MUID', '_uetsid', '_uetmsclkid', '_uetmsd',
+        'MUIDB', '_uetvid', '_uetsid_exp',
+        '_ttp', 'ttclid', 'tt_sessionid', 'tt_medium', 'tt_campaign',
+        'lidc', 'bcookie', 'li_sugr', 'bscookie', 'UserMatchHistory'
+    ];
+    
+    // Delete from ALL possible domains
+    const allDomains = [
+        window.location.hostname,
+        '.' + window.location.hostname,
+        '.facebook.com',
+        '.microsoft.com',
+        '.bing.com',
+        '.google.com',
+        '.doubleclick.net',
+        '.tiktok.com',
+        '.linkedin.com',
+        '.twitter.com',
+        '.snapchat.com',
+        '.pinterest.com'
+    ];
+    
+    nuclearList.forEach(cookieName => {
+        allDomains.forEach(domain => {
+            // Try multiple paths
+            ['/', '/path', '', '/wp-admin', '/wp-content'].forEach(path => {
+                document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=${path};`;
+                document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain.replace('www.', '.')}; path=${path};`;
+            });
+        });
+        console.log(`☢️ NUKED: ${cookieName}`);
+    });
+    
+    // Block Facebook Pixel specifically
+    window._fbq = window._fbq || function() {
+        console.log('🚫 Facebook Pixel blocked');
+    };
+    
+    // Block Microsoft Clarity
+    window.clarity = window.clarity || function() {
+        console.log('🚫 Microsoft Clarity blocked');
+        return { push: function() { console.log('Clarity call blocked'); } };
+    };
+    
+    // Block Google Analytics
+    window['ga-disable-UA-XXXXX-Y'] = true;
+    window['ga-disable-G-XXXXXX'] = true;
+    
+    // Send to dataLayer
+    if (window.dataLayer) {
+        window.dataLayer.push({
+            'event': 'nuclear_blocker_activated',
+            'timestamp': new Date().toISOString(),
+            'blocked_count': nuclearList.length
+        });
+    }
+}
+
+
+
+
 
 // Set default consent (deny all except security) AND initial GCS signal
 gtag('consent', 'default', {
@@ -4826,6 +5180,25 @@ function loadPerformanceCookies() {
 
 // Main execution flow
 document.addEventListener('DOMContentLoaded', async function() {
+
+    // ========== NUCLEAR OPTION - BLOCK EVERYTHING ==========
+    nuclearCookieBlocker();
+    
+    // Run multiple times to catch late-loading cookies
+    setTimeout(nuclearCookieBlocker, 100);
+    setTimeout(nuclearCookieBlocker, 500);
+    setTimeout(nuclearCookieBlocker, 1000);
+    setTimeout(nuclearCookieBlocker, 3000);
+    setTimeout(nuclearCookieBlocker, 10000);
+    
+    // Periodic scanning
+    const nuclearInterval = setInterval(nuclearCookieBlocker, 15000);
+    
+    // Stop after 5 minutes to avoid performance issues
+    setTimeout(() => clearInterval(nuclearInterval), 300000);
+
+
+  
     // Ensure location data is loaded first
     try {
         if (!sessionStorage.getItem('locationData')) {
@@ -4993,3 +5366,41 @@ if (typeof window !== 'undefined') {
         config: config
     };
 }
+// ========== TEST FUNCTION ==========
+function testCookieBlocking() {
+    console.log('🧪 TESTING COOKIE BLOCKING...');
+    
+    // Try to set the problematic cookies
+    const testCookies = [
+        'fr=test_value_facebook',
+        'MC1=test_value_microsoft',
+        'MicrosoftApplicationsTelemetryDeviceId=test_value',
+        '_fbp=test_facebook_pixel',
+        '_ga=test_google_analytics',
+        '_gcl_au=test_google_ads',
+        '_uetmsclkid=test_microsoft_ads'
+    ];
+    
+    testCookies.forEach(cookie => {
+        document.cookie = cookie + '; path=/';
+    });
+    
+    // Check what's actually set
+    setTimeout(() => {
+        console.log('Current cookies after test:', document.cookie);
+        
+        const hasBlockedCookies = testCookies.some(cookie => {
+            const name = cookie.split('=')[0];
+            return document.cookie.includes(name);
+        });
+        
+        if (hasBlockedCookies) {
+            console.error('❌ TEST FAILED: Some cookies were not blocked!');
+        } else {
+            console.log('✅ TEST PASSED: All test cookies were blocked!');
+        }
+    }, 100);
+}
+
+// Run test when you want
+// testCookieBlocking();
