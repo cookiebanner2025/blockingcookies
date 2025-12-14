@@ -144,146 +144,7 @@ clarityConfig: {
     loadBeforeConsent: false // NEW: Prevent loading before consent in regulated regions
 },
 
-
-
-
-
-    // Automatic Cookie Blocking Configuration
-        blockPatterns: {
-            // ALL MARKETING/ADS PLATFORMS
-            advertising: [
-                // FACEBOOK/META
-                'facebook.com', 'fb.com', '_fbp', 'fr', 'xs', 'c_user', 'datr', 'sb', 'wd', 
-                'act', 'presence', 'lu', 'pl', 'm_user', 'dbln', '_fbc', 'usida',
-                'fbclid', 'fbc_', 'facebook',
-                
-                // GOOGLE ADS
-                'googleads', 'doubleclick', 'googlesyndication', '_gcl', 'gclid', 
-                'IDE', 'NID', '_gat_gtag', 'DSID', 'FPLC', '__gads',
-                
-                // MICROSOFT/BING
-                'bing.com', 'microsoft.com', '_uet', '_uetms', '_uetvid', '_uetsid', 
-                'msclkid', 'MUID', 'MC1', 'ANON', 'ANONYMOUS',
-                
-                // TIKTOK
-                'tiktok.com', '_ttp', 'ttclid', 'tt_', 'tt_sessionid',
-                
-                // LINKEDIN
-                'linkedin.com', 'lidc', 'bcookie', 'li_', 'liap', 'lissc',
-                
-                // PINTEREST
-                'pinterest.com', '_pin_', 'pinterest',
-                
-                // TWITTER/X
-                'twitter.com', 'twid', 'guest_id', 'personalization_id', 'ct0',
-                
-                // SNAPCHAT
-                'snapchat.com', 'sc_at', '_scid', '_sctr',
-                
-                // OTHER AD NETWORKS
-                'taboola.com', 'outbrain.com', 'criteo.com', 'adroll.com',
-                'amazon-adsystem.com', 'adsystem', 'adserver', 'adnxs',
-                'rubiconproject.com', 'pubmatic.com', 'openx.net',
-                
-                // GENERAL AD PATTERNS
-                'ads.', 'ad.', 'tracking', 'pixel', 'beacon', 'trk.', 'tr_'
-            ],
-            
-            // ALL ANALYTICS PLATFORMS
-            analytics: [
-                // GOOGLE ANALYTICS
-                'google-analytics.com', 'analytics.google', '_ga', '_gid', '_gat', 
-                '_gat_', '_ga_', '_dc_gtm', 'gtm', 'gtag',
-                
-                // MICROSOFT CLARITY
-                'clarity.ms', '_clck', '_clsk', '_cltk', 'CLID', 'ANONCHK', 'SM',
-                
-                // HOTJAR
-                'hotjar.com', '_hj', '_hjid', '_hjSession', '_hjAbsoluteSession',
-                
-                // ADOBE ANALYTICS
-                'adobe.com', 'demdex', 's_', 'AMCV_', 'mbox',
-                
-                // HUBSPOT
-                'hubspot.com', 'hubspotutk', '__hssc', '__hssrc', '__hstc',
-                
-                // OTHER ANALYTICS
-                'matomo', '_pk', 'piwik', 'segment', 'mixpanel', 'amplitude',
-                'snowplow', '_sp', 'fullstory', '_fs', 'mouseflow', 'crazyegg',
-                'optimizely', 'vwo', 'abtasty',
-                
-                // GENERAL ANALYTICS PATTERNS
-                'analytics', 'stats.', 'metric', 'measure', 'tracker'
-            ],
-            
-            // ALL EMBEDDED CONTENT
-            embeds: [
-                // YOUTUBE
-                'youtube.com', 'youtu.be', 'youtube-nocookie.com', 
-                'youtube.googleapis.com', 'YSC', 'VISITOR_INFO1_LIVE', 'PREF',
-                
-                // GOOGLE MAPS
-                'google.com/maps', 'maps.googleapis.com', 'maps.google.com',
-                
-                // VIMEO
-                'vimeo.com', 'player.vimeo.com', 'vuid',
-                
-                // DAILYMOTION
-                'dailymotion.com', 'dmvk', 'dm_last_visit',
-                
-                // OTHER EMBEDS
-                'soundcloud.com', 'spotify.com', 'twitch.tv', 'wistia.com',
-                'slideshare.net', 'issuu.com',
-                
-                // SOCIAL EMBEDS
-                'instagram.com', 'twitter.com/embed', 'facebook.com/plugins'
-            ],
-            
-            // CHAT/SUPPORT WIDGETS
-            widgets: [
-                // ZENDESK
-                'zendesk.com', '__zl', 'zendesk',
-                
-                // INTERCOM
-                'intercom.io', 'intercom.com', 'intercom-id', 'intercom-session',
-                
-                // DRIFT
-                'drift.com', 'drift_', 'drift.',
-                
-                // FRESHCHAT
-                'freshchat.com', '_fw_',
-                
-                // OLA
-                'olark.com', 'ola_',
-                
-                // TIDIO
-                'tidiochat.com', 'tidio',
-                
-                // GENERAL CHAT
-                'chat.', 'livechat', 'support.', 'help.'
-            ],
-            
-            // ESSENTIAL COOKIES (NEVER BLOCK)
-            essential: [
-                'cookie_consent', 'preferred_language', 'dashboard_auth',
-                'first_visit_date', 'session_start_time', 'locationData',
-                'PHPSESSID', 'wordpress_', 'wp-', 'sessionid', 'csrftoken',
-                'AWSALB', 'AWSALBCORS', '__cf', 'JSESSIONID', 'ARRAffinity'
-            ]
-        },
-
-
-
-
-
-
-
-
-
-
-
-
-  
+    
   
     // Microsoft UET Configuration
     // Microsoft UET Configuration
@@ -348,7 +209,45 @@ clarityConfig: {
         showLanguageSelector: true,
         autoDetectLanguage: true
     },
-    
+
+
+
+
+
+
+    // ========== AUTO-BLOCKING CONFIGURATION ==========
+    autoBlockConfig: {
+        enabled: true, // Set to true to enable automatic blocking
+        blockAllNonEssential: true, // Automatically block all non-essential cookies
+        blockPatterns: [
+            // Add your custom patterns here if you find new cookies
+            // Example: 'new_cookie_name'
+        ],
+        platformPatterns: {
+            // Google
+            'google': ['_ga', '_gid', '_gat', '_gcl', 'gclid', 'IDE', 'NID'],
+            // Facebook/Meta
+            'facebook': ['_fbp', 'fr', 'datr', 'c_user'],
+            // Microsoft
+            'microsoft': ['_uet', 'MUID', '_uetsid', '_uetvid'],
+            // TikTok
+            'tiktok': ['_ttp', 'ttclid', 'tt_sessionid'],
+            // LinkedIn
+            'linkedin': ['lidc', 'bcookie', 'li_sugr'],
+            // Twitter/X
+            'twitter': ['personalization_id', 'guest_id', 'ct0'],
+            // Analytics platforms
+            'analytics': ['_hj', '_cl', 'hubspotutk', '__hssc', '__hstc'],
+            // Advertising networks
+            'advertising': ['_gcl', '_fbp', 'IDE', 'NID']
+        }
+    },
+
+
+
+
+
+  
     // Geo-targeting configuration
  // In your config object, update the geoConfig section:
 geoConfig: {
@@ -577,6 +476,143 @@ geoConfig: {
 
 // ============== IMPLEMENTATION SECTION ============== //
 // ============== IMPLEMENTATION SECTION ============== //
+
+
+
+
+// ============== AUTO-BLOCKING FUNCTIONS ============== //
+// Function to check if a cookie should be blocked
+function shouldBlockCookie(cookieName) {
+    if (!config.autoBlockConfig.enabled) return false;
+    
+    const name = cookieName.toLowerCase();
+    
+    // 1. Always allow essential cookies (from your cookieDatabase)
+    for (const pattern in cookieDatabase) {
+        if (name.startsWith(pattern.toLowerCase()) || name === pattern.toLowerCase()) {
+            if (cookieDatabase[pattern].category === 'essential' || 
+                cookieDatabase[pattern].category === 'functional') {
+                return false; // Don't block essential/functional cookies
+            }
+        }
+    }
+    
+    // 2. Check platform patterns (automatic blocking)
+    if (config.autoBlockConfig.blockAllNonEssential) {
+        for (const platform in config.autoBlockConfig.platformPatterns) {
+            for (const pattern of config.autoBlockConfig.platformPatterns[platform]) {
+                if (name.startsWith(pattern.toLowerCase()) || name === pattern.toLowerCase()) {
+                    return true; // Block this cookie
+                }
+            }
+        }
+    }
+    
+    // 3. Check custom patterns (manual blocking)
+    for (const pattern of config.autoBlockConfig.blockPatterns) {
+        if (name.startsWith(pattern.toLowerCase()) || name === pattern.toLowerCase()) {
+            return true; // Block this cookie
+        }
+    }
+    
+    // 4. Default: don't block if we're not sure
+    return false;
+}
+
+// Function to block a single cookie
+function blockCookie(cookieName) {
+    document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=${window.location.hostname}; SameSite=Lax`;
+}
+
+// Main blocking function - runs on page load
+function blockNonEssentialCookies() {
+    if (!config.autoBlockConfig.enabled) return;
+    
+    console.log('🔒 Auto-blocking: Checking for non-essential cookies...');
+    
+    const cookies = document.cookie.split(';');
+    let blockedCount = 0;
+    
+    cookies.forEach(cookie => {
+        const [nameValue] = cookie.trim().split('=');
+        const name = nameValue ? nameValue.trim() : '';
+        
+        if (name && shouldBlockCookie(name)) {
+            blockCookie(name);
+            blockedCount++;
+            console.log(`🔒 Blocked: ${name}`);
+        }
+    });
+    
+    if (blockedCount > 0) {
+        console.log(`✅ Auto-blocking complete: Blocked ${blockedCount} non-essential cookies`);
+        
+        // Send to dataLayer for tracking
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'cookies_auto_blocked',
+            'blocked_count': blockedCount,
+            'timestamp': new Date().toISOString()
+        });
+    }
+}
+
+// Function to add custom patterns (for your manual control)
+function addBlockingPattern(pattern) {
+    if (!config.autoBlockConfig.blockPatterns.includes(pattern)) {
+        config.autoBlockConfig.blockPatterns.push(pattern);
+        console.log(`✅ Added blocking pattern: ${pattern}`);
+        
+        // Re-block cookies with new pattern
+        blockNonEssentialCookies();
+    }
+}
+
+// Function to remove blocking pattern
+function removeBlockingPattern(pattern) {
+    const index = config.autoBlockConfig.blockPatterns.indexOf(pattern);
+    if (index > -1) {
+        config.autoBlockConfig.blockPatterns.splice(index, 1);
+        console.log(`✅ Removed blocking pattern: ${pattern}`);
+    }
+}
+
+// Function to toggle auto-blocking on/off
+function toggleAutoBlocking(enabled) {
+    config.autoBlockConfig.enabled = enabled;
+    console.log(`✅ Auto-blocking ${enabled ? 'ENABLED' : 'DISABLED'}`);
+    
+    if (enabled) {
+        blockNonEssentialCookies();
+    }
+}
+
+// Make functions available globally
+window.cookieBlocking = {
+    toggle: toggleAutoBlocking,
+    addPattern: addBlockingPattern,
+    removePattern: removeBlockingPattern,
+    blockNow: blockNonEssentialCookies,
+    getStatus: () => config.autoBlockConfig.enabled,
+    getPatterns: () => config.autoBlockConfig.blockPatterns
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Initialize dataLayer for Google Tag Manager
 window.dataLayer = window.dataLayer || [];
 
@@ -2735,62 +2771,6 @@ function injectConsentHTML(detectedCookies, language = 'en') {
                 ${generateCategorySection('advertising')}
                 ${detectedCookies.uncategorized.length > 0 ? generateCategorySection('uncategorized') : ''}
             </div>
-
-
-                <!-- Auto-Blocking Control Panel -->
-                <div class="blocking-control-panel" style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e0e0e0;">
-                    <h3 style="margin-top: 0; color: #2c3e50;">Auto-Blocking Controls</h3>
-                    
-                    <div class="blocking-toggle" style="margin-bottom: 15px;">
-                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                            <input type="checkbox" id="toggleAutoBlock" checked style="width: 18px; height: 18px;">
-                            <span style="font-weight: 500;">Enable Automatic Cookie Blocking</span>
-                        </label>
-                    </div>
-                    
-                    <div class="platform-controls" style="margin-bottom: 15px;">
-                        <h4 style="margin: 0 0 10px 0; color: #2c3e50;">Block by Platform:</h4>
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
-                            <label style="display: flex; align-items: center; gap: 5px;">
-                                <input type="checkbox" class="platform-checkbox" data-platform="google" checked style="width: 16px; height: 16px;">
-                                <span>Google</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 5px;">
-                                <input type="checkbox" class="platform-checkbox" data-platform="facebook" checked style="width: 16px; height: 16px;">
-                                <span>Facebook</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 5px;">
-                                <input type="checkbox" class="platform-checkbox" data-platform="microsoft" checked style="width: 16px; height: 16px;">
-                                <span>Microsoft</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 5px;">
-                                <input type="checkbox" class="platform-checkbox" data-platform="tiktok" checked style="width: 16px; height: 16px;">
-                                <span>TikTok</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 5px;">
-                                <input type="checkbox" class="platform-checkbox" data-platform="linkedin" checked style="width: 16px; height: 16px;">
-                                <span>LinkedIn</span>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="manual-blocking">
-                        <h4 style="margin: 0 0 10px 0; color: #2c3e50;">Manually Block Cookies:</h4>
-                        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-                            <input type="text" id="manualCookieInput" placeholder="Enter cookie name" 
-                                   style="flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
-                            <button id="addManualBlock" style="padding: 8px 15px; background: #1177d0; color: white; border: none; border-radius: 6px; cursor: pointer;">Add</button>
-                        </div>
-                        <div id="manualList" style="font-size: 12px; color: #666;"></div>
-                    </div>
-                </div>
-
-
-
-
-
-
-            
             <div class="cookie-settings-footer">
                 ${config.analytics.enabled ? `
                 <div class="see-analytics-container">
@@ -3845,45 +3825,6 @@ function injectConsentHTML(detectedCookies, language = 'en') {
             padding: 8px 10px;
         }
     }
-
-
-
-
-
-
-
-    /* Blocking Control Panel Styles */
-    .blocking-control-panel {
-        transition: all 0.3s ease;
-    }
-    
-    .blocking-control-panel:hover {
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        border-color: #3498db;
-    }
-    
-    #manualCookieInput:focus {
-        outline: none;
-        border-color: #3498db;
-        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-    }
-    
-    #addManualBlock:hover {
-        background-color: #0d5ea6;
-        transform: translateY(-1px);
-    }
-    
-    #addManualBlock:active {
-        transform: translateY(0);
-    }
-
-
-
-
-
-
-
-    
     </style>`;
     
     document.body.insertAdjacentHTML('beforeend', html);
@@ -4828,45 +4769,6 @@ function updateConsentMode(consentData) {
             sendClarityConsentSignal(clarityConsent); // Add this line
         }
     }
-
-
-
-
-
-       // Apply aggressive cookie blocking based on consent
-    if (config.autoBlockConfig && config.autoBlockConfig.enabled) {
-        console.log('🔧 Applying cookie blocking rules...');
-        
-        // BLOCK everything if not consented
-        if (!consentData.categories.analytics) {
-            console.log('🚫 Blocking ALL analytics cookies');
-            disableAllCookies('analytics');
-        }
-        
-        if (!consentData.categories.advertising) {
-            console.log('🚫 Blocking ALL advertising cookies');
-            disableAllCookies('advertising');
-        }
-        
-        if (!consentData.categories.performance) {
-            console.log('🚫 Blocking ALL performance cookies');
-            disableAllCookies('performance');
-        }
-        
-        // If advertising is allowed, Facebook might still be blocked by platform settings
-        if (consentData.categories.advertising) {
-            console.log('✅ Advertising cookies allowed');
-        }
-    }
-
-
-
-
-
-
-
-
-  
     
     // Push general consent update to dataLayer with GCS signal
     window.dataLayer.push({
@@ -4976,14 +4878,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Set default UET consent
     setDefaultUetConsent();
 
-
-      // Initialize automatic cookie blocking
-        // Initialize automatic cookie blocking
-    if (config.autoBlockConfig && config.autoBlockConfig.enabled) {
-        console.log('🚀 Starting cookie blocking system...');
-        initializeAutoBlocking();
-    }
-
     // Fetch location data asynchronously
     await fetchLocationData();
     
@@ -4994,6 +4888,31 @@ document.addEventListener('DOMContentLoaded', async function() {
         return;
     }
 
+
+
+
+    // ========== AUTO-BLOCK NON-ESSENTIAL COOKIES ==========
+    // Block cookies BEFORE showing banner
+    blockNonEssentialCookies();
+    
+    // Also block when page fully loads
+    window.addEventListener('load', function() {
+        setTimeout(blockNonEssentialCookies, 1000); // Check again after 1 second
+    });
+    
+    // Set up periodic scanning (every 30 seconds)
+    setInterval(blockNonEssentialCookies, 30000);
+
+
+
+
+
+
+
+
+
+
+  
     // Scan and categorize existing cookies
     const detectedCookies = scanAndCategorizeCookies();
 
@@ -5060,17 +4979,6 @@ function checkExistingClarityConsent() {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 // Export functions for global access if needed
 if (typeof window !== 'undefined') {
     window.cookieConsent = {
@@ -5084,535 +4992,4 @@ if (typeof window !== 'undefined') {
         showAnalytics: showAnalyticsDashboard,
         config: config
     };
-
-
-
-
-
-
-
-
-// ============== IMMEDIATE SCRIPT BLOCKING ============== //
-// ============== IMMEDIATE SCRIPT BLOCKING ============== //
-
-// Block ALL tracking scripts immediately
-(function() {
-    if (!config.autoBlockConfig || !config.autoBlockConfig.enabled) return;
-    
-    console.log('🛡️ IMMEDIATE script blocking activated');
-    
-    // 1. BLOCK FACEBOOK PIXEL IMMEDIATELY
-    window.fbq = window.fbq || function() {
-        console.log('🚫 Facebook Pixel blocked:', arguments);
-        (window.fbq.callMethod ? window.fbq.callMethod.apply(window.fbq, arguments) : 
-         window.fbq.queue ? window.fbq.queue.push(arguments) : null);
-    };
-    
-    // 2. BLOCK GOOGLE ANALYTICS
-    window.ga = window.ga || function() {
-        console.log('🚫 Google Analytics blocked:', arguments);
-        (window.ga.q = window.ga.q || []).push(arguments);
-    };
-    
-    // 3. BLOCK ALL TRACKING SCRIPTS FROM LOADING
-    const originalAppendChild = Element.prototype.appendChild;
-    Element.prototype.appendChild = function(element) {
-        if (element.tagName === 'SCRIPT' && element.src) {
-            const src = element.src.toLowerCase();
-            
-            // BLOCK ALL THESE DOMAINS
-            const blockedDomains = [
-                'facebook.com', 'google-analytics.com', 'googletagmanager.com',
-                'doubleclick.net', 'bing.com', 'tiktok.com', 'snapchat.com',
-                'linkedin.com', 'twitter.com', 'pinterest.com', 'hotjar.com',
-                'clarity.ms', 'youtube.com', 'youtube-nocookie.com',
-                'vimeo.com', 'maps.googleapis.com'
-            ];
-            
-            for (const domain of blockedDomains) {
-                if (src.includes(domain)) {
-                    console.log('🚫 Blocked script from:', domain);
-                    return element; // Don't append
-                }
-            }
-        }
-        
-        return originalAppendChild.call(this, element);
-    };
-    
-    // 4. BLOCK COOKIE SETTING
-    const cookieDescriptor = Object.getOwnPropertyDescriptor(Document.prototype, 'cookie');
-    if (cookieDescriptor && cookieDescriptor.set) {
-        Object.defineProperty(document, 'cookie', {
-            get: cookieDescriptor.get,
-            set: function(value) {
-                const cookieName = value.split('=')[0].trim();
-                
-                // Check if should block
-                if (cookieName && shouldBlockCookie(cookieName)) {
-                    console.log('🛑 PREVENTED cookie:', cookieName);
-                    return; // Don't set the cookie
-                }
-                
-                // Allow the cookie
-                return cookieDescriptor.set.call(document, value);
-            }
-        });
-    }
-})();
-
-  
-
-
-
-// ============== BLOCKING CONTROL PANEL FUNCTIONS ============== //
-
-// Setup control panel events
-function setupBlockingControls() {
-    // Toggle auto-blocking
-    const toggle = document.getElementById('toggleAutoBlock');
-    if (toggle) {
-        toggle.checked = config.autoBlockConfig.enabled;
-        toggle.addEventListener('change', function() {
-            config.autoBlockConfig.enabled = this.checked;
-            if (this.checked) {
-                initializeAutoBlocking();
-                console.log('✅ Auto-blocking enabled');
-            } else {
-                console.log('❌ Auto-blocking disabled');
-            }
-        });
-    }
-    
-    // Platform controls
-    document.querySelectorAll('.platform-checkbox').forEach(checkbox => {
-        const platform = checkbox.dataset.platform;
-        checkbox.checked = config.autoBlockConfig.platformSpecific[platform];
-        checkbox.addEventListener('change', function() {
-            config.autoBlockConfig.platformSpecific[platform] = this.checked;
-        });
-    });
-    
-    // Manual blocking
-    const addBtn = document.getElementById('addManualBlock');
-    const input = document.getElementById('manualCookieInput');
-    const list = document.getElementById('manualList');
-    
-    if (addBtn && input) {
-        addBtn.addEventListener('click', function() {
-            const cookieName = input.value.trim();
-            if (cookieName && !config.autoBlockConfig.manualBlocks.includes(cookieName)) {
-                config.autoBlockConfig.manualBlocks.push(cookieName);
-                deleteCookie(cookieName);
-                
-                // Update display
-                if (list) {
-                    list.innerHTML += `<div style="margin: 5px 0; padding: 5px; background: #fff; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
-                        <span>${cookieName}</span>
-                        <button onclick="removeManualBlock('${cookieName}')" style="background: #e74c3c; color: white; border: none; padding: 3px 8px; border-radius: 4px; font-size: 11px; cursor: pointer;">Remove</button>
-                    </div>`;
-                }
-                
-                input.value = '';
-                console.log(`✅ Added to manual blocklist: ${cookieName}`);
-            }
-        });
-        
-        // Press Enter to add
-        input.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                addBtn.click();
-            }
-        });
-    }
 }
-
-// Remove from manual blocklist
-function removeManualBlock(cookieName) {
-    const index = config.autoBlockConfig.manualBlocks.indexOf(cookieName);
-    if (index > -1) {
-        config.autoBlockConfig.manualBlocks.splice(index, 1);
-        console.log(`✅ Removed from blocklist: ${cookieName}`);
-    }
-    
-    // Remove from display
-    const list = document.getElementById('manualList');
-    if (list) {
-        list.innerHTML = list.innerHTML.replace(new RegExp(`<div[^>]*>.*${cookieName}.*</div>`, 'i'), '');
-    }
-}
-
-// Initialize controls when settings modal opens
-const originalShowCookieSettings = showCookieSettings;
-showCookieSettings = function() {
-    originalShowCookieSettings();
-    setTimeout(setupBlockingControls, 300);
-};
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-// ============== AUTOMATIC COOKIE BLOCKING SYSTEM ============== //
-
-// Main blocking function - prevents non-essential cookies
-// Main blocking function - prevents non-essential cookies
-function initializeAutoBlocking() {
-    if (!config.autoBlockConfig.enabled) return;
-    
-    console.log('🛡️ Auto-blocking system activated');
-    
-    // 1. BLOCK EXISTING COOKIES IMMEDIATELY
-    applyPatternBlocking();
-    
-    // 2. BLOCK MANUAL ENTRIES
-    applyManualBlocking();
-    
-    // 3. SETUP REAL-TIME MONITORING
-    setupRealTimeMonitoring();
-    
-    // 4. SETUP PERIODIC SCANNING
-    setupCookieScanner();
-    
-    // 5. LOG ALL BLOCKED ACTIVITY
-    logBlockingActivity();
-}
-
-// REAL-TIME COOKIE MONITORING
-function setupRealTimeMonitoring() {
-    console.log('👀 Real-time cookie monitoring started');
-    
-    // Monitor every 1 second
-    setInterval(function() {
-        const cookies = document.cookie.split(';');
-        cookies.forEach(cookie => {
-            const [name] = cookie.trim().split('=');
-            if (name && shouldBlockCookie(name)) {
-                deleteCookie(name);
-                console.log(`⏱️ Real-time blocked: ${name}`);
-            }
-        });
-    }, 1000);
-}
-
-// LOG ALL BLOCKING ACTIVITY
-function logBlockingActivity() {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-        'event': 'cookie_blocking_activated',
-        'timestamp': new Date().toISOString(),
-        'blocking_enabled': true
-    });
-}
-// Apply automatic pattern matching
-// Apply automatic pattern matching
-function applyPatternBlocking() {
-    if (!config.autoBlockConfig.enabled) return;
-    
-    const patterns = config.autoBlockConfig.blockPatterns;
-    const currentCookies = document.cookie.split(';');
-    let blockedCount = 0;
-    
-    currentCookies.forEach(cookie => {
-        const [name] = cookie.trim().split('=');
-        if (!name) return;
-        
-        // Check ALL categories except 'essential'
-        for (const category in patterns) {
-            if (category === 'essential') continue;
-            
-            if (Array.isArray(patterns[category])) {
-                patterns[category].forEach(pattern => {
-                    const nameLower = name.toLowerCase();
-                    const patternLower = pattern.toLowerCase();
-                    
-                    if (nameLower.includes(patternLower) || 
-                        patternLower.includes(nameLower)) {
-                        deleteCookie(name);
-                        blockedCount++;
-                        console.log(`🚫 Blocked ${name} (${category}: ${pattern})`);
-                    }
-                });
-            }
-        }
-    });
-    
-    if (blockedCount > 0) {
-        console.log(`✅ Blocked ${blockedCount} cookies`);
-    }
-}
-
-// Apply manual blocking rules
-function applyManualBlocking() {
-    config.autoBlockConfig.manualBlocks.forEach(cookieName => {
-        deleteCookie(cookieName);
-        console.log(`🚫 Manually blocked: ${cookieName}`);
-    });
-}
-
-// Delete a cookie effectively
-function deleteCookie(name) {
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${window.location.hostname};`;
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-}
-
-// Scan and block periodically
-function setupCookieScanner() {
-    // Initial scan
-    scanAndBlockNewCookies();
-    
-    // Scan every 10 seconds
-    setInterval(scanAndBlockNewCookies, 10000);
-}
-
-// Detect and block newly added cookies
-function scanAndBlockNewCookies() {
-    const currentCookies = document.cookie.split(';').map(c => c.trim());
-    const lastScan = window.lastCookieScan || [];
-    
-    // Find new cookies since last scan
-    const newCookies = currentCookies.filter(cookie => !lastScan.includes(cookie));
-    
-    newCookies.forEach(cookie => {
-        const [name] = cookie.split('=');
-        if (shouldBlockCookie(name)) {
-            deleteCookie(name);
-            console.log(`🚫 Auto-blocked new cookie: ${name}`);
-        }
-    });
-    
-    window.lastCookieScan = currentCookies;
-}
-
-// Determine if a cookie should be blocked
-function shouldBlockCookie(cookieName) {
-    if (!cookieName || cookieName.trim() === '') return false;
-    
-    const name = cookieName.trim();
-    const nameLower = name.toLowerCase();
-    
-    // 1. NEVER BLOCK ESSENTIAL COOKIES
-    const essentialPatterns = [
-        'cookie_consent', 'preferred_language', 'dashboard_auth',
-        'first_visit_date', 'session_start_time', 'locationData',
-        'PHPSESSID', 'wordpress_', 'wp-', 'sessionid', 'csrftoken',
-        'AWSALB', 'AWSALBCORS', '__cf', 'JSESSIONID', 'ARRAffinity',
-        'laravel_session', 'XSRF-TOKEN'
-    ];
-    
-    for (const pattern of essentialPatterns) {
-        const patternLower = pattern.toLowerCase();
-        if (nameLower.includes(patternLower) || patternLower.includes(nameLower)) {
-            return false; // Don't block essential cookies
-        }
-    }
-    
-    // 2. BLOCK ALL MARKETING/ANALYTICS COOKIES
-    const blockPatterns = [
-        // META/FACEBOOK
-        'fbp', 'fr', 'xs', 'c_user', 'datr', 'sb', 'wd', 'act',
-        'presence', 'lu', 'pl', 'm_user', 'dbln', 'fbc', 'usida',
-        'facebook', 'fb_',
-        
-        // GOOGLE
-        'ga', '_ga', '_gid', '_gat', 'gcl', 'gclid', 'gtag',
-        'google', 'doubleclick', 'googlesyndication',
-        
-        // MICROSOFT
-        'uet', 'msclkid', 'MUID', 'MC1', 'ANON', 'microsoft',
-        'bing', '_cl', 'clarity',
-        
-        // TIKTOK
-        'ttp', 'ttclid', 'tt_', 'tiktok',
-        
-        // LINKEDIN
-        'lidc', 'bcookie', 'li_', 'liap', 'linkedin',
-        
-        // OTHER PLATFORMS
-        'pin_', 'pinterest', 'twid', 'twitter', 'snapchat',
-        'sc_', 'taboola', 'outbrain', 'criteo', 'adroll',
-        'amazon', 'ads', 'adserver', 'adnxs',
-        
-        // ANALYTICS
-        'hj', 'hotjar', 'demdex', 'adobe', 'hubspot',
-        'matomo', 'piwik', 'segment', 'mixpanel', 'amplitude',
-        'snowplow', 'fullstory', 'mouseflow', 'crazyegg',
-        'optimizely', 'vwo', 'abtasty',
-        
-        // EMBEDS
-        'youtube', 'yimg', 'vimeo', 'dailymotion', 'soundcloud',
-        'spotify', 'twitch', 'wistia', 'instagram',
-        
-        // CHAT WIDGETS
-        'zendesk', 'intercom', 'drift', 'freshchat', 'olark',
-        'tidio', 'livechat'
-    ];
-    
-    // Check if cookie matches any block pattern
-    for (const pattern of blockPatterns) {
-        const patternLower = pattern.toLowerCase();
-        if (nameLower.includes(patternLower) || 
-            patternLower.includes(nameLower) ||
-            nameLower === patternLower) {
-            console.log(`🚫 Blocking ${name} (matches: ${pattern})`);
-            return true;
-        }
-    }
-    
-    // 3. Check platform settings
-    return checkPlatformBlocking(name);
-}
-
-// Check platform-specific blocking
-// Check platform-specific blocking
-function checkPlatformBlocking(cookieName) {
-    if (!cookieName) return false;
-    
-    const platforms = config.autoBlockConfig.platformSpecific;
-    const nameLower = cookieName.toLowerCase();
-    
-    // Check ALL platforms
-    if (platforms.google && (
-        nameLower.includes('google') || 
-        nameLower.startsWith('ga_') ||
-        nameLower.startsWith('_ga') ||
-        nameLower.includes('gcl') ||
-        nameLower.includes('gtag')
-    )) {
-        return true;
-    }
-    
-    if (platforms.facebook && (
-        nameLower.includes('fb') || 
-        nameLower.includes('facebook') ||
-        nameLower.startsWith('_fb') ||
-        nameLower === 'fr' ||
-        nameLower === 'xs' ||
-        nameLower === 'sb' ||
-        nameLower === 'wd'
-    )) {
-        return true;
-    }
-    
-    if (platforms.microsoft && (
-        nameLower.includes('ms') || 
-        nameLower.includes('uet') ||
-        nameLower.includes('bing') ||
-        nameLower.includes('clarity') ||
-        nameLower.startsWith('_cl')
-    )) {
-        return true;
-    }
-    
-    if (platforms.tiktok && (
-        nameLower.includes('tt') || 
-        nameLower.includes('tiktok')
-    )) {
-        return true;
-    }
-    
-    if (platforms.linkedin && (
-        nameLower.includes('li') || 
-        nameLower.includes('linkedin')
-    )) {
-        return true;
-    }
-    
-    return false;
-}
-
-// Enable specific cookie category
-function enableCookieCategory(category) {
-    console.log(`✅ Enabling ${category} cookies`);
-}
-
-// Disable specific cookie category
-function disableCookieCategory(category) {
-    console.log(`🚫 Disabling ${category} cookies`);
-    const patterns = config.autoBlockConfig.blockPatterns[category] || [];
-    patterns.forEach(pattern => {
-        document.cookie.split(';').forEach(cookie => {
-            const [name] = cookie.trim().split('=');
-            if (name && (name.includes(pattern) || pattern.includes(name))) {
-                deleteCookie(name);
-            }
-        });
-    });
-}
-
-
-
-
-
-
-
-// Disable ALL cookies in a category aggressively
-function disableAllCookies(category) {
-    console.log(`💥 Aggressively blocking ${category} cookies`);
-    
-    // Additional blocking patterns for each category
-    const extraPatterns = {
-        analytics: ['analytics', 'stats', 'metric', 'track'],
-        advertising: ['ads', 'ad.', 'marketing', 'pixel', 'tracking'],
-        performance: ['cdn', 'cache', 'embed', 'player']
-    };
-    
-    // Block cookies
-    document.cookie.split(';').forEach(cookie => {
-        const [name] = cookie.trim().split('=');
-        if (!name) return;
-        
-        const nameLower = name.toLowerCase();
-        
-        // Check main patterns
-        if (shouldBlockCookie(name)) {
-            deleteCookie(name);
-            return;
-        }
-        
-        // Check extra patterns
-        if (extraPatterns[category]) {
-            extraPatterns[category].forEach(pattern => {
-                if (nameLower.includes(pattern)) {
-                    deleteCookie(name);
-                    console.log(`💥 Aggressive block: ${name} (${category})`);
-                }
-            });
-        }
-    });
-}
-
-
-
-
-
-
-
-  
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
