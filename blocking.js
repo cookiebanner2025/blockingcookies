@@ -149,33 +149,128 @@ clarityConfig: {
 
 
     // Automatic Cookie Blocking Configuration
-    autoBlockConfig: {
-        enabled: true,                    // Turn ON/OFF entire blocking system
-        blockPatterns: {                  // Automatic pattern matching
-            analytics: [
-                'googletagmanager.com', 'google-analytics.com',
-                '_ga', '_gid', '_gat',     // Google Analytics patterns
-                '_hj', '_clck', '_clsk'    // Hotjar & Clarity patterns
-            ],
+        blockPatterns: {
+            // ALL MARKETING/ADS PLATFORMS
             advertising: [
-                'facebook.com/tr', 'fbp', 'fbc',
-                'doubleclick.net', '_gcl',
-                'bing.com', '_uet', 'msclkid'
+                // FACEBOOK/META
+                'facebook.com', 'fb.com', '_fbp', 'fr', 'xs', 'c_user', 'datr', 'sb', 'wd', 
+                'act', 'presence', 'lu', 'pl', 'm_user', 'dbln', '_fbc', 'usida',
+                'fbclid', 'fbc_', 'facebook',
+                
+                // GOOGLE ADS
+                'googleads', 'doubleclick', 'googlesyndication', '_gcl', 'gclid', 
+                'IDE', 'NID', '_gat_gtag', 'DSID', 'FPLC', '__gads',
+                
+                // MICROSOFT/BING
+                'bing.com', 'microsoft.com', '_uet', '_uetms', '_uetvid', '_uetsid', 
+                'msclkid', 'MUID', 'MC1', 'ANON', 'ANONYMOUS',
+                
+                // TIKTOK
+                'tiktok.com', '_ttp', 'ttclid', 'tt_', 'tt_sessionid',
+                
+                // LINKEDIN
+                'linkedin.com', 'lidc', 'bcookie', 'li_', 'liap', 'lissc',
+                
+                // PINTEREST
+                'pinterest.com', '_pin_', 'pinterest',
+                
+                // TWITTER/X
+                'twitter.com', 'twid', 'guest_id', 'personalization_id', 'ct0',
+                
+                // SNAPCHAT
+                'snapchat.com', 'sc_at', '_scid', '_sctr',
+                
+                // OTHER AD NETWORKS
+                'taboola.com', 'outbrain.com', 'criteo.com', 'adroll.com',
+                'amazon-adsystem.com', 'adsystem', 'adserver', 'adnxs',
+                'rubiconproject.com', 'pubmatic.com', 'openx.net',
+                
+                // GENERAL AD PATTERNS
+                'ads.', 'ad.', 'tracking', 'pixel', 'beacon', 'trk.', 'tr_'
             ],
-            performance: [
-                'cloudflare.com', '__cf',
-                'youtube.com', 'yimg.com'
+            
+            // ALL ANALYTICS PLATFORMS
+            analytics: [
+                // GOOGLE ANALYTICS
+                'google-analytics.com', 'analytics.google', '_ga', '_gid', '_gat', 
+                '_gat_', '_ga_', '_dc_gtm', 'gtm', 'gtag',
+                
+                // MICROSOFT CLARITY
+                'clarity.ms', '_clck', '_clsk', '_cltk', 'CLID', 'ANONCHK', 'SM',
+                
+                // HOTJAR
+                'hotjar.com', '_hj', '_hjid', '_hjSession', '_hjAbsoluteSession',
+                
+                // ADOBE ANALYTICS
+                'adobe.com', 'demdex', 's_', 'AMCV_', 'mbox',
+                
+                // HUBSPOT
+                'hubspot.com', 'hubspotutk', '__hssc', '__hssrc', '__hstc',
+                
+                // OTHER ANALYTICS
+                'matomo', '_pk', 'piwik', 'segment', 'mixpanel', 'amplitude',
+                'snowplow', '_sp', 'fullstory', '_fs', 'mouseflow', 'crazyegg',
+                'optimizely', 'vwo', 'abtasty',
+                
+                // GENERAL ANALYTICS PATTERNS
+                'analytics', 'stats.', 'metric', 'measure', 'tracker'
+            ],
+            
+            // ALL EMBEDDED CONTENT
+            embeds: [
+                // YOUTUBE
+                'youtube.com', 'youtu.be', 'youtube-nocookie.com', 
+                'youtube.googleapis.com', 'YSC', 'VISITOR_INFO1_LIVE', 'PREF',
+                
+                // GOOGLE MAPS
+                'google.com/maps', 'maps.googleapis.com', 'maps.google.com',
+                
+                // VIMEO
+                'vimeo.com', 'player.vimeo.com', 'vuid',
+                
+                // DAILYMOTION
+                'dailymotion.com', 'dmvk', 'dm_last_visit',
+                
+                // OTHER EMBEDS
+                'soundcloud.com', 'spotify.com', 'twitch.tv', 'wistia.com',
+                'slideshare.net', 'issuu.com',
+                
+                // SOCIAL EMBEDS
+                'instagram.com', 'twitter.com/embed', 'facebook.com/plugins'
+            ],
+            
+            // CHAT/SUPPORT WIDGETS
+            widgets: [
+                // ZENDESK
+                'zendesk.com', '__zl', 'zendesk',
+                
+                // INTERCOM
+                'intercom.io', 'intercom.com', 'intercom-id', 'intercom-session',
+                
+                // DRIFT
+                'drift.com', 'drift_', 'drift.',
+                
+                // FRESHCHAT
+                'freshchat.com', '_fw_',
+                
+                // OLA
+                'olark.com', 'ola_',
+                
+                // TIDIO
+                'tidiochat.com', 'tidio',
+                
+                // GENERAL CHAT
+                'chat.', 'livechat', 'support.', 'help.'
+            ],
+            
+            // ESSENTIAL COOKIES (NEVER BLOCK)
+            essential: [
+                'cookie_consent', 'preferred_language', 'dashboard_auth',
+                'first_visit_date', 'session_start_time', 'locationData',
+                'PHPSESSID', 'wordpress_', 'wp-', 'sessionid', 'csrftoken',
+                'AWSALB', 'AWSALBCORS', '__cf', 'JSESSIONID', 'ARRAffinity'
             ]
         },
-        manualBlocks: [],                  // Add custom cookies manually here
-        platformSpecific: {                // Control by platform
-            google: true,
-            facebook: true,
-            microsoft: true,
-            tiktok: true,
-            linkedin: true
-        }
-    },
 
 
 
@@ -4738,17 +4833,29 @@ function updateConsentMode(consentData) {
 
 
 
-    // Apply cookie blocking based on consent
-    if (config.autoBlockConfig.enabled) {
-        // Block or allow based on user choices
+       // Apply aggressive cookie blocking based on consent
+    if (config.autoBlockConfig && config.autoBlockConfig.enabled) {
+        console.log('🔧 Applying cookie blocking rules...');
+        
+        // BLOCK everything if not consented
         if (!consentData.categories.analytics) {
-            disableCookieCategory('analytics');
+            console.log('🚫 Blocking ALL analytics cookies');
+            disableAllCookies('analytics');
         }
+        
         if (!consentData.categories.advertising) {
-            disableCookieCategory('advertising');
+            console.log('🚫 Blocking ALL advertising cookies');
+            disableAllCookies('advertising');
         }
+        
         if (!consentData.categories.performance) {
-            disableCookieCategory('performance');
+            console.log('🚫 Blocking ALL performance cookies');
+            disableAllCookies('performance');
+        }
+        
+        // If advertising is allowed, Facebook might still be blocked by platform settings
+        if (consentData.categories.advertising) {
+            console.log('✅ Advertising cookies allowed');
         }
     }
 
@@ -4871,7 +4978,11 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 
       // Initialize automatic cookie blocking
-    initializeAutoBlocking();
+        // Initialize automatic cookie blocking
+    if (config.autoBlockConfig && config.autoBlockConfig.enabled) {
+        console.log('🚀 Starting cookie blocking system...');
+        initializeAutoBlocking();
+    }
 
     // Fetch location data asynchronously
     await fetchLocationData();
@@ -4981,6 +5092,77 @@ if (typeof window !== 'undefined') {
 
 
 
+// ============== IMMEDIATE SCRIPT BLOCKING ============== //
+// ============== IMMEDIATE SCRIPT BLOCKING ============== //
+
+// Block ALL tracking scripts immediately
+(function() {
+    if (!config.autoBlockConfig || !config.autoBlockConfig.enabled) return;
+    
+    console.log('🛡️ IMMEDIATE script blocking activated');
+    
+    // 1. BLOCK FACEBOOK PIXEL IMMEDIATELY
+    window.fbq = window.fbq || function() {
+        console.log('🚫 Facebook Pixel blocked:', arguments);
+        (window.fbq.callMethod ? window.fbq.callMethod.apply(window.fbq, arguments) : 
+         window.fbq.queue ? window.fbq.queue.push(arguments) : null);
+    };
+    
+    // 2. BLOCK GOOGLE ANALYTICS
+    window.ga = window.ga || function() {
+        console.log('🚫 Google Analytics blocked:', arguments);
+        (window.ga.q = window.ga.q || []).push(arguments);
+    };
+    
+    // 3. BLOCK ALL TRACKING SCRIPTS FROM LOADING
+    const originalAppendChild = Element.prototype.appendChild;
+    Element.prototype.appendChild = function(element) {
+        if (element.tagName === 'SCRIPT' && element.src) {
+            const src = element.src.toLowerCase();
+            
+            // BLOCK ALL THESE DOMAINS
+            const blockedDomains = [
+                'facebook.com', 'google-analytics.com', 'googletagmanager.com',
+                'doubleclick.net', 'bing.com', 'tiktok.com', 'snapchat.com',
+                'linkedin.com', 'twitter.com', 'pinterest.com', 'hotjar.com',
+                'clarity.ms', 'youtube.com', 'youtube-nocookie.com',
+                'vimeo.com', 'maps.googleapis.com'
+            ];
+            
+            for (const domain of blockedDomains) {
+                if (src.includes(domain)) {
+                    console.log('🚫 Blocked script from:', domain);
+                    return element; // Don't append
+                }
+            }
+        }
+        
+        return originalAppendChild.call(this, element);
+    };
+    
+    // 4. BLOCK COOKIE SETTING
+    const cookieDescriptor = Object.getOwnPropertyDescriptor(Document.prototype, 'cookie');
+    if (cookieDescriptor && cookieDescriptor.set) {
+        Object.defineProperty(document, 'cookie', {
+            get: cookieDescriptor.get,
+            set: function(value) {
+                const cookieName = value.split('=')[0].trim();
+                
+                // Check if should block
+                if (cookieName && shouldBlockCookie(cookieName)) {
+                    console.log('🛑 PREVENTED cookie:', cookieName);
+                    return; // Don't set the cookie
+                }
+                
+                // Allow the cookie
+                return cookieDescriptor.set.call(document, value);
+            }
+        });
+    }
+})();
+
+  
+
 
 
 // ============== BLOCKING CONTROL PANEL FUNCTIONS ============== //
@@ -5087,43 +5269,90 @@ showCookieSettings = function() {
 // ============== AUTOMATIC COOKIE BLOCKING SYSTEM ============== //
 
 // Main blocking function - prevents non-essential cookies
+// Main blocking function - prevents non-essential cookies
 function initializeAutoBlocking() {
     if (!config.autoBlockConfig.enabled) return;
     
     console.log('🛡️ Auto-blocking system activated');
     
-    // 1. Block based on patterns
+    // 1. BLOCK EXISTING COOKIES IMMEDIATELY
     applyPatternBlocking();
     
-    // 2. Block manual entries
+    // 2. BLOCK MANUAL ENTRIES
     applyManualBlocking();
     
-    // 3. Setup periodic scanning
+    // 3. SETUP REAL-TIME MONITORING
+    setupRealTimeMonitoring();
+    
+    // 4. SETUP PERIODIC SCANNING
     setupCookieScanner();
+    
+    // 5. LOG ALL BLOCKED ACTIVITY
+    logBlockingActivity();
 }
 
+// REAL-TIME COOKIE MONITORING
+function setupRealTimeMonitoring() {
+    console.log('👀 Real-time cookie monitoring started');
+    
+    // Monitor every 1 second
+    setInterval(function() {
+        const cookies = document.cookie.split(';');
+        cookies.forEach(cookie => {
+            const [name] = cookie.trim().split('=');
+            if (name && shouldBlockCookie(name)) {
+                deleteCookie(name);
+                console.log(`⏱️ Real-time blocked: ${name}`);
+            }
+        });
+    }, 1000);
+}
+
+// LOG ALL BLOCKING ACTIVITY
+function logBlockingActivity() {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+        'event': 'cookie_blocking_activated',
+        'timestamp': new Date().toISOString(),
+        'blocking_enabled': true
+    });
+}
+// Apply automatic pattern matching
 // Apply automatic pattern matching
 function applyPatternBlocking() {
+    if (!config.autoBlockConfig.enabled) return;
+    
     const patterns = config.autoBlockConfig.blockPatterns;
     const currentCookies = document.cookie.split(';');
+    let blockedCount = 0;
     
     currentCookies.forEach(cookie => {
         const [name] = cookie.trim().split('=');
         if (!name) return;
         
-        // Check each category
+        // Check ALL categories except 'essential'
         for (const category in patterns) {
             if (category === 'essential') continue;
             
-            patterns[category].forEach(pattern => {
-                if (name.includes(pattern) || 
-                    cookie.toLowerCase().includes(pattern.toLowerCase())) {
-                    deleteCookie(name);
-                    console.log(`🚫 Blocked: ${name} (matched pattern: ${pattern})`);
-                }
-            });
+            if (Array.isArray(patterns[category])) {
+                patterns[category].forEach(pattern => {
+                    const nameLower = name.toLowerCase();
+                    const patternLower = pattern.toLowerCase();
+                    
+                    if (nameLower.includes(patternLower) || 
+                        patternLower.includes(nameLower)) {
+                        deleteCookie(name);
+                        blockedCount++;
+                        console.log(`🚫 Blocked ${name} (${category}: ${pattern})`);
+                    }
+                });
+            }
         }
     });
+    
+    if (blockedCount > 0) {
+        console.log(`✅ Blocked ${blockedCount} cookies`);
+    }
 }
 
 // Apply manual blocking rules
@@ -5170,40 +5399,135 @@ function scanAndBlockNewCookies() {
 
 // Determine if a cookie should be blocked
 function shouldBlockCookie(cookieName) {
-    if (!cookieName) return false;
+    if (!cookieName || cookieName.trim() === '') return false;
     
-    // Never block essential cookies
-    const essentialPatterns = ['AWSALB', '__cf', 'JSESSIONID', 'ARRAffinity'];
-    if (essentialPatterns.some(pattern => cookieName.includes(pattern))) {
-        return false;
+    const name = cookieName.trim();
+    const nameLower = name.toLowerCase();
+    
+    // 1. NEVER BLOCK ESSENTIAL COOKIES
+    const essentialPatterns = [
+        'cookie_consent', 'preferred_language', 'dashboard_auth',
+        'first_visit_date', 'session_start_time', 'locationData',
+        'PHPSESSID', 'wordpress_', 'wp-', 'sessionid', 'csrftoken',
+        'AWSALB', 'AWSALBCORS', '__cf', 'JSESSIONID', 'ARRAffinity',
+        'laravel_session', 'XSRF-TOKEN'
+    ];
+    
+    for (const pattern of essentialPatterns) {
+        const patternLower = pattern.toLowerCase();
+        if (nameLower.includes(patternLower) || patternLower.includes(nameLower)) {
+            return false; // Don't block essential cookies
+        }
     }
     
-    // Check against blocking patterns
-    const patterns = config.autoBlockConfig.blockPatterns;
-    for (const category in patterns) {
-        if (patterns[category].some(pattern => 
-            cookieName.includes(pattern) || 
-            pattern.includes(cookieName))) {
+    // 2. BLOCK ALL MARKETING/ANALYTICS COOKIES
+    const blockPatterns = [
+        // META/FACEBOOK
+        'fbp', 'fr', 'xs', 'c_user', 'datr', 'sb', 'wd', 'act',
+        'presence', 'lu', 'pl', 'm_user', 'dbln', 'fbc', 'usida',
+        'facebook', 'fb_',
+        
+        // GOOGLE
+        'ga', '_ga', '_gid', '_gat', 'gcl', 'gclid', 'gtag',
+        'google', 'doubleclick', 'googlesyndication',
+        
+        // MICROSOFT
+        'uet', 'msclkid', 'MUID', 'MC1', 'ANON', 'microsoft',
+        'bing', '_cl', 'clarity',
+        
+        // TIKTOK
+        'ttp', 'ttclid', 'tt_', 'tiktok',
+        
+        // LINKEDIN
+        'lidc', 'bcookie', 'li_', 'liap', 'linkedin',
+        
+        // OTHER PLATFORMS
+        'pin_', 'pinterest', 'twid', 'twitter', 'snapchat',
+        'sc_', 'taboola', 'outbrain', 'criteo', 'adroll',
+        'amazon', 'ads', 'adserver', 'adnxs',
+        
+        // ANALYTICS
+        'hj', 'hotjar', 'demdex', 'adobe', 'hubspot',
+        'matomo', 'piwik', 'segment', 'mixpanel', 'amplitude',
+        'snowplow', 'fullstory', 'mouseflow', 'crazyegg',
+        'optimizely', 'vwo', 'abtasty',
+        
+        // EMBEDS
+        'youtube', 'yimg', 'vimeo', 'dailymotion', 'soundcloud',
+        'spotify', 'twitch', 'wistia', 'instagram',
+        
+        // CHAT WIDGETS
+        'zendesk', 'intercom', 'drift', 'freshchat', 'olark',
+        'tidio', 'livechat'
+    ];
+    
+    // Check if cookie matches any block pattern
+    for (const pattern of blockPatterns) {
+        const patternLower = pattern.toLowerCase();
+        if (nameLower.includes(patternLower) || 
+            patternLower.includes(nameLower) ||
+            nameLower === patternLower) {
+            console.log(`🚫 Blocking ${name} (matches: ${pattern})`);
             return true;
         }
     }
     
-    // Check platform settings
-    return checkPlatformBlocking(cookieName);
+    // 3. Check platform settings
+    return checkPlatformBlocking(name);
 }
 
 // Check platform-specific blocking
+// Check platform-specific blocking
 function checkPlatformBlocking(cookieName) {
+    if (!cookieName) return false;
+    
     const platforms = config.autoBlockConfig.platformSpecific;
     const nameLower = cookieName.toLowerCase();
     
-    if (platforms.google && (nameLower.includes('google') || nameLower.startsWith('_ga'))) {
+    // Check ALL platforms
+    if (platforms.google && (
+        nameLower.includes('google') || 
+        nameLower.startsWith('ga_') ||
+        nameLower.startsWith('_ga') ||
+        nameLower.includes('gcl') ||
+        nameLower.includes('gtag')
+    )) {
         return true;
     }
-    if (platforms.facebook && (nameLower.includes('fb') || nameLower.includes('facebook'))) {
+    
+    if (platforms.facebook && (
+        nameLower.includes('fb') || 
+        nameLower.includes('facebook') ||
+        nameLower.startsWith('_fb') ||
+        nameLower === 'fr' ||
+        nameLower === 'xs' ||
+        nameLower === 'sb' ||
+        nameLower === 'wd'
+    )) {
         return true;
     }
-    if (platforms.microsoft && (nameLower.includes('ms') || nameLower.includes('uet'))) {
+    
+    if (platforms.microsoft && (
+        nameLower.includes('ms') || 
+        nameLower.includes('uet') ||
+        nameLower.includes('bing') ||
+        nameLower.includes('clarity') ||
+        nameLower.startsWith('_cl')
+    )) {
+        return true;
+    }
+    
+    if (platforms.tiktok && (
+        nameLower.includes('tt') || 
+        nameLower.includes('tiktok')
+    )) {
+        return true;
+    }
+    
+    if (platforms.linkedin && (
+        nameLower.includes('li') || 
+        nameLower.includes('linkedin')
+    )) {
         return true;
     }
     
@@ -5234,6 +5558,42 @@ function disableCookieCategory(category) {
 
 
 
+
+// Disable ALL cookies in a category aggressively
+function disableAllCookies(category) {
+    console.log(`💥 Aggressively blocking ${category} cookies`);
+    
+    // Additional blocking patterns for each category
+    const extraPatterns = {
+        analytics: ['analytics', 'stats', 'metric', 'track'],
+        advertising: ['ads', 'ad.', 'marketing', 'pixel', 'tracking'],
+        performance: ['cdn', 'cache', 'embed', 'player']
+    };
+    
+    // Block cookies
+    document.cookie.split(';').forEach(cookie => {
+        const [name] = cookie.trim().split('=');
+        if (!name) return;
+        
+        const nameLower = name.toLowerCase();
+        
+        // Check main patterns
+        if (shouldBlockCookie(name)) {
+            deleteCookie(name);
+            return;
+        }
+        
+        // Check extra patterns
+        if (extraPatterns[category]) {
+            extraPatterns[category].forEach(pattern => {
+                if (nameLower.includes(pattern)) {
+                    deleteCookie(name);
+                    console.log(`💥 Aggressive block: ${name} (${category})`);
+                }
+            });
+        }
+    });
+}
 
 
 
