@@ -447,6 +447,21 @@ geoConfig: {
    ========================================================= */
 (function () {
 
+
+
+    /* ===================== CHECK IF CONSENT EXISTS ===================== */
+  // Wait for page to fully load first
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBlocking);
+  } else {
+    setTimeout(initBlocking, 1000); // Wait 1 second for cookie banner to initialize
+  }
+  
+  function initBlocking() {
+    // Rest of your blocking code goes here...
+    // (Keep all the existing blocking code inside this function)
+  }
+
   /* ===================== CONFIG ===================== */
   var CONSENT_COOKIE = "cookie_consent";
   
@@ -4541,9 +4556,9 @@ function saveCustomSettings() {
     } else if (!analyticsChecked && !advertisingChecked) {
         gcsSignal = 'G100';
     } else if (analyticsChecked && !advertisingChecked) {
-        gcsSignal = 'G101';
+        gcsSignal = 'G101'; // Analytics granted, ads denied
     } else if (!analyticsChecked && advertisingChecked) {
-        gcsSignal = 'G110';
+        gcsSignal = 'G110'; // Ads granted, analytics denied  <-- FIXED THIS ONE
     }
 
     const consentData = {
@@ -4560,57 +4575,55 @@ function saveCustomSettings() {
         timestamp: new Date().getTime()
     };
     
+    // CRITICAL: Save the cookie FIRST
     setCookie('cookie_consent', JSON.stringify(consentData), 365);
-    updateConsentMode(consentData);
-    loadCookiesAccordingToConsent(consentData);
     
-    if (!consentData.categories.analytics) clearCategoryCookies('analytics');
-    if (!consentData.categories.performance) clearCategoryCookies('performance');
-    if (!consentData.categories.advertising) clearCategoryCookies('advertising');
-    if (!consentData.categories.uncategorized) clearCategoryCookies('uncategorized');
+    // CRITICAL: Update consent mode BEFORE reload
+    updateConsentMode(consentData);
+    
+    // Load or clear cookies based on consent
+    if (consentData.categories.analytics) {
+        console.log("✅ Loading analytics cookies");
+    } else {
+        clearCategoryCookies('analytics');
+    }
+    
+    if (consentData.categories.advertising) {
+        console.log("✅ Loading marketing cookies");
+    } else {
+        clearCategoryCookies('advertising');
+    }
     
     if (config.analytics.enabled) {
         updateConsentStats('custom');
     }
     
-    const consentStates = {
-        'ad_storage': consentData.categories.advertising ? 'granted' : 'denied',
-        'analytics_storage': consentData.categories.analytics ? 'granted' : 'denied',
-        'ad_user_data': consentData.categories.advertising ? 'granted' : 'denied',
-        'ad_personalization': consentData.categories.advertising ? 'granted' : 'denied',
-        'personalization_storage': consentData.categories.performance ? 'granted' : 'denied',
-        'functionality_storage': consentData.categories.functional ? 'granted' : 'denied',
-        'security_storage': 'granted'
-    };
-    
-    // Fire specific events based on consent choices with GCS signals
-    if (analyticsChecked && !advertisingChecked) {
-        window.dataLayer.push({
-            'event': 'analytics_cookie_accepted',
-            'consent_mode': {
-                'analytics_storage': 'granted',
-                'ad_storage': 'denied'
-            },
-            'gcs': 'G101',
-            'consent_status': 'custom',
-            'consent_categories': consentData.categories,
-            'timestamp': new Date().toISOString(),
-            'location_data': locationData
-        });
-    } else if (advertisingChecked && !analyticsChecked) {
+    // Fire dataLayer event with the correct GCS signal
+    if (advertisingChecked && !analyticsChecked) {
         window.dataLayer.push({
             'event': 'marketing_cookie_accepted',
             'consent_mode': {
                 'ad_storage': 'granted',
                 'analytics_storage': 'denied'
             },
-            'gcs': 'G110',
+            'gcs': 'G110', // Explicit GCS signal for marketing only
             'consent_status': 'custom',
             'consent_categories': consentData.categories,
             'timestamp': new Date().toISOString(),
             'location_data': locationData
         });
     } else {
+        // For all other cases
+        const consentStates = {
+            'ad_storage': consentData.categories.advertising ? 'granted' : 'denied',
+            'analytics_storage': consentData.categories.analytics ? 'granted' : 'denied',
+            'ad_user_data': consentData.categories.advertising ? 'granted' : 'denied',
+            'ad_personalization': consentData.categories.advertising ? 'granted' : 'denied',
+            'personalization_storage': consentData.categories.performance ? 'granted' : 'denied',
+            'functionality_storage': consentData.categories.functional ? 'granted' : 'denied',
+            'security_storage': 'granted'
+        };
+        
         window.dataLayer.push({
             'event': 'cookie_consent_custom',
             'consent_mode': consentStates,
@@ -4622,12 +4635,11 @@ function saveCustomSettings() {
         });
     }
     
-    // RELOAD THE PAGE TO APPLY CHANGES
+    // Wait 1 second to ensure everything is saved, then reload
     setTimeout(() => {
         window.location.reload();
-    }, 500);
+    }, 1000);
 }
-
 
 
 
