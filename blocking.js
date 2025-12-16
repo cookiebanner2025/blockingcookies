@@ -442,6 +442,9 @@ geoConfig: {
 
 
 
+
+
+
 /* =========================================================
    INTEGRATED COOKIE + PIXEL BLOCKER (UPDATED)
    ========================================================= */
@@ -701,13 +704,6 @@ geoConfig: {
 /* =========================================================
    END OF COOKIE BLOCKER
    ========================================================= */
-
-
-
-
-
-
-
 
 
 
@@ -4451,7 +4447,10 @@ function acceptAllCookies() {
         'location_data': locationData
     });
     
- 
+    // RELOAD THE PAGE TO RELEASE BLOCKED COOKIES
+    setTimeout(() => {
+        window.location.reload();
+    }, 500);
 }
 
 function rejectAllCookies() {
@@ -4499,7 +4498,10 @@ function rejectAllCookies() {
         'location_data': locationData
     });
     
-
+    // RELOAD THE PAGE TO ENSURE COOKIES ARE BLOCKED
+    setTimeout(() => {
+        window.location.reload();
+    }, 500);
 }
 
 function saveCustomSettings() {
@@ -4600,7 +4602,10 @@ function saveCustomSettings() {
         });
     }
     
-  
+    // RELOAD THE PAGE TO APPLY CHANGES
+    setTimeout(() => {
+        window.location.reload();
+    }, 500);
 }
 
 
