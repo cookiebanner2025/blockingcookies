@@ -442,9 +442,6 @@ geoConfig: {
 
 
 
-
-
-
 /* =========================================================
    INTEGRATED COOKIE + PIXEL BLOCKER (UPDATED)
    ========================================================= */
@@ -704,6 +701,24 @@ geoConfig: {
 /* =========================================================
    END OF COOKIE BLOCKER
    ========================================================= */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4453,6 +4468,8 @@ function acceptAllCookies() {
     }, 500);
 }
 
+
+
 function rejectAllCookies() {
     // Add this line to ensure Clarity isn't loaded
     initializeClarity(false);
@@ -4503,6 +4520,9 @@ function rejectAllCookies() {
         window.location.reload();
     }, 500);
 }
+
+
+
 
 function saveCustomSettings() {
     const analyticsChecked = document.querySelector('input[data-category="analytics"]').checked;
@@ -4607,6 +4627,10 @@ function saveCustomSettings() {
         window.location.reload();
     }, 500);
 }
+
+
+
+
 
 
 
