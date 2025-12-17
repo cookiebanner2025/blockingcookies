@@ -570,73 +570,77 @@ var SCRIPT_BLOCKING = {
   }
 
   /* ===================== BLOCK SCRIPT URLS ===================== */
-  function setupScriptBlocking() {
+function setupScriptBlocking() {
     var originalCreateElement = document.createElement;
     document.createElement = function () {
-      var el = originalCreateElement.apply(document, arguments);
+        var el = originalCreateElement.apply(document, arguments);
 
-      if (arguments[0] === "script") {
-        Object.defineProperty(el, "src", {
-          set: function (src) {
-            // Check if we have consent
-            const consentCookie = getCookie(CONSENT_COOKIE);
-            let consentData = null;
-            
-            if (consentCookie) {
-              try {
-                consentData = JSON.parse(consentCookie);
-              } catch (e) {
-                consentData = null;
-              }
-            }
+        if (arguments[0] === "script") {
+            Object.defineProperty(el, "src", {
+                set: function (src) {
+                    // CRITICAL: ALWAYS ALLOW Google Tag Manager to load
+                    if (src.indexOf('googletagmanager.com') !== -1) {
+                        console.log("✅ Allowing Google Tag Manager script:", src);
+                        this.setAttribute("src", src);
+                        return;
+                    }
 
-            // If no consent, block all marketing and analytics scripts
-            if (!consentData) {
-              // Check if it's a marketing script
-              for (var i = 0; i < SCRIPT_BLOCKING.marketing.scripts.length; i++) {
-                if (src.indexOf(SCRIPT_BLOCKING.marketing.scripts[i]) !== -1) {
-                  console.warn("🚫 Blocked marketing script (no consent):", src);
-                  return;
-                }
-              }
-              // Check if it's an analytics script
-              for (var j = 0; j < SCRIPT_BLOCKING.analytics.scripts.length; j++) {
-                if (src.indexOf(SCRIPT_BLOCKING.analytics.scripts[j]) !== -1) {
-                  console.warn("🚫 Blocked analytics script (no consent):", src);
-                  return;
-                }
-              }
-            } else {
-              // Check consent for marketing scripts
-              if (!consentData.categories.advertising) {
-                for (var k = 0; k < SCRIPT_BLOCKING.marketing.scripts.length; k++) {
-                  if (src.indexOf(SCRIPT_BLOCKING.marketing.scripts[k]) !== -1) {
-                    console.warn("🚫 Blocked marketing script (marketing denied):", src);
-                    return;
-                  }
-                }
-              }
-              
-              // Check consent for analytics scripts
-              if (!consentData.categories.analytics) {
-                for (var l = 0; l < SCRIPT_BLOCKING.analytics.scripts.length; l++) {
-                  if (src.indexOf(SCRIPT_BLOCKING.analytics.scripts[l]) !== -1) {
-                    console.warn("🚫 Blocked analytics script (analytics denied):", src);
-                    return;
-                  }
-                }
-              }
-            }
-            
-            // If we get here, allow the script
-            this.setAttribute("src", src);
-          }
-        });
-      }
+                    // Check if we have consent for other scripts
+                    const consentCookie = getCookie(CONSENT_COOKIE);
+                    let consentData = null;
+                    
+                    if (consentCookie) {
+                        try {
+                            consentData = JSON.parse(consentCookie);
+                        } catch (e) {
+                            consentData = null;
+                        }
+                    }
 
-      return el;
+                    // If no consent, block all marketing and analytics scripts (except GTM)
+                    if (!consentData) {
+                        for (var i = 0; i < SCRIPT_BLOCKING.marketing.scripts.length; i++) {
+                            if (src.indexOf(SCRIPT_BLOCKING.marketing.scripts[i]) !== -1) {
+                                console.warn("🚫 Blocked marketing script (no consent):", src);
+                                return;
+                            }
+                        }
+                        for (var j = 0; j < SCRIPT_BLOCKING.analytics.scripts.length; j++) {
+                            if (src.indexOf(SCRIPT_BLOCKING.analytics.scripts[j]) !== -1) {
+                                console.warn("🚫 Blocked analytics script (no consent):", src);
+                                return;
+                            }
+                        }
+                    } else {
+                        // Check consent for marketing scripts
+                        if (!consentData.categories.advertising) {
+                            for (var k = 0; k < SCRIPT_BLOCKING.marketing.scripts.length; k++) {
+                                if (src.indexOf(SCRIPT_BLOCKING.marketing.scripts[k]) !== -1) {
+                                    console.warn("🚫 Blocked marketing script (marketing denied):", src);
+                                    return;
+                                }
+                            }
+                        }
+                        
+                        // Check consent for analytics scripts
+                        if (!consentData.categories.analytics) {
+                            for (var l = 0; l < SCRIPT_BLOCKING.analytics.scripts.length; l++) {
+                                if (src.indexOf(SCRIPT_BLOCKING.analytics.scripts[l]) !== -1) {
+                                    console.warn("🚫 Blocked analytics script (analytics denied):", src);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    
+                    // If we get here, allow the script
+                    this.setAttribute("src", src);
+                }
+            });
+        }
+        return el;
     };
-  }
+}
 
   /* ===================== DELAYED PIXEL BLOCKING ===================== */
   function setupDelayedPixelBlocking() {
