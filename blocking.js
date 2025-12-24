@@ -3306,9 +3306,10 @@ function injectConsentHTML(detectedCookies, language = 'en') {
     }
     
     /* When restricting clicks, make overlay block clicks */
+    /* When restricting clicks, make overlay block clicks */
     .cookie-blur-overlay.block-clicks {
         pointer-events: auto;
-        cursor: not-allowed;
+        cursor: default;  <-- CHANGED TO "default"
     }
     
     /* When preventing scroll */
@@ -4775,6 +4776,9 @@ function acceptAllCookies() {
         'timestamp': new Date().toISOString(),
         'location_data': locationData
     });
+
+    // NEW: Disable interaction restrictions when user accepts
+    disableInteractionRestrictions();
     
     console.log("✅ All cookies accepted, page will reload");
 }
@@ -4839,6 +4843,9 @@ function rejectAllCookies() {
         'timestamp': new Date().toISOString(),
         'location_data': locationData
     });
+
+    // Add this at the end of rejectAllCookies function
+    disableInteractionRestrictions();
     
     console.log("✅ All cookies rejected, page will reload");
 }
@@ -4984,7 +4991,10 @@ function saveCustomSettings() {
             'location_data': locationData
         });
     }
-    
+   
+        // NEW: Disable interaction restrictions when user saves custom settings
+    disableInteractionRestrictions();
+   
     console.log("✅ Custom settings saved and page will reload");
 }
 
