@@ -5471,7 +5471,7 @@ if (typeof window !== 'undefined') {
         saveSettings: saveCustomSettings,
         changeLanguage: changeLanguage,
         showAnalytics: showAnalyticsDashboard,
-        config: config
+        config: config,
          // NEW: Control functions for restrictions
         toggleRestrictions: toggleRestrictions,
         toggleScrollRestriction: toggleScrollRestriction,
