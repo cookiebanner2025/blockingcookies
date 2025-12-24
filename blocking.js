@@ -5472,6 +5472,12 @@ if (typeof window !== 'undefined') {
         changeLanguage: changeLanguage,
         showAnalytics: showAnalyticsDashboard,
         config: config
+         // NEW: Control functions for restrictions
+        toggleRestrictions: toggleRestrictions,
+        toggleScrollRestriction: toggleScrollRestriction,
+        toggleClickRestriction: toggleClickRestriction,
+        toggleBlurEffect: toggleBlurEffect,
+        setBlurDensity: setBlurDensity
     };
 
 
