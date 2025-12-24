@@ -1,3 +1,9 @@
+window.COOKIE_SETTINGS = {
+    BLOCKING_ENABLED: false,    // Set to false to turn OFF blocking
+    RELOAD_ENABLED: false       // Set to false to turn OFF page reloads
+};
+
+
 /* ============================================================
    COOKIE BLOCKING FIREWALL - INTEGRATED WITH CUSTOM BANNER
    This blocks all cookies and trackers BEFORE consent is given
@@ -11,7 +17,12 @@
     'use strict';
     
     /* ===================== CONFIGURATION ===================== */
-    const CONSENT_KEY = "__user_cookie_consent__";
+  
+// Use global settings
+const BLOCKING_ENABLED = window.COOKIE_SETTINGS.BLOCKING_ENABLED;
+const RELOAD_ENABLED = window.COOKIE_SETTINGS.RELOAD_ENABLED;
+
+const CONSENT_KEY = "__user_cookie_consent__";
     const CATEGORIES_KEY = "__user_cookie_categories__";
     
     // Get stored consent data
@@ -28,7 +39,20 @@
         console.info("✅ Full consent granted – all tracking allowed");
         return; // Exit the blocking script
     }
+
+       /* ===================== BLOCKING ON/OFF SWITCH ===================== */
+    // ADD THESE NEW LINES HERE:
+    // If blocking is disabled, exit the entire script
+    if (!BLOCKING_ENABLED) {
+        console.log("🟡 Blocking feature is OFF - all tracking allowed");
+        return; // Exit without blocking anything
+    }
     
+    // If user gave FULL consent, don't block anything
+    if (storedConsent === "granted") {
+        console.info("✅ Full consent granted – all tracking allowed");
+        return; // Exit the blocking script
+    }
     // If user gave PARTIAL consent (custom categories), we'll block selectively
     // If no consent at all, block everything
     
@@ -397,12 +421,20 @@
             performance: true
         }));
         
-        // Reload to apply changes
-        setTimeout(() => {
-            window.location.reload();
-        }, 300);
+      // Only reload if reload feature is enabled
+if (window.COOKIE_SETTINGS && window.COOKIE_SETTINGS.RELOAD_ENABLED) {
+    setTimeout(() => {
+        window.location.reload();
+    }, 300);
+} else {
+    console.log("🟡 Page reload disabled - changes applied without refresh");
+}
     };
-    
+
+
+
+
+   
     window.enableTrackingByCategory = function(categories) {
         console.log("✅ Enabling tracking for categories:", categories);
         
@@ -420,21 +452,32 @@
             localStorage.setItem(CONSENT_KEY, "partial");
         }
         
-        // ALWAYS RELOAD to apply new blocking rules
-        setTimeout(() => {
-            window.location.reload();
-        }, 300);
+       // Only reload if reload feature is enabled
+if (window.COOKIE_SETTINGS && window.COOKIE_SETTINGS.RELOAD_ENABLED) {
+    setTimeout(() => {
+        window.location.reload();
+    }, 300);
+} else {
+    console.log("🟡 Page reload disabled - changes applied without refresh");
+}
     };
+
+
+   
     
     window.disableAllTracking = function() {
         console.log("❌ Disabling ALL tracking");
         localStorage.removeItem(CONSENT_KEY);
         localStorage.removeItem(CATEGORIES_KEY);
         
-        // Reload to apply changes
-        setTimeout(() => {
-            window.location.reload();
-        }, 300);
+      // Only reload if reload feature is enabled
+if (window.COOKIE_SETTINGS && window.COOKIE_SETTINGS.RELOAD_ENABLED) {
+    setTimeout(() => {
+        window.location.reload();
+    }, 300);
+} else {
+    console.log("🟡 Page reload disabled - changes applied without refresh");
+}
     };
     
 })();
@@ -4728,10 +4771,14 @@ function acceptAllCookies() {
             performance: true
         }));
         
-        // Force reload
-        setTimeout(() => {
-            window.location.reload();
-        }, 300);
+      // Only reload if reload feature is enabled
+if (window.COOKIE_SETTINGS && window.COOKIE_SETTINGS.RELOAD_ENABLED) {
+    setTimeout(() => {
+        window.location.reload();
+    }, 300);
+} else {
+    console.log("🟡 Page reload disabled - changes saved without refresh");
+}
     }
     
     // Your existing code continues...
@@ -4795,10 +4842,14 @@ function rejectAllCookies() {
         localStorage.removeItem("__user_cookie_consent__");
         localStorage.removeItem("__user_cookie_categories__");
         
-        // Force reload
-        setTimeout(() => {
-            window.location.reload();
-        }, 300);
+       // Only reload if reload feature is enabled
+if (window.COOKIE_SETTINGS && window.COOKIE_SETTINGS.RELOAD_ENABLED) {
+    setTimeout(() => {
+        window.location.reload();
+    }, 300);
+} else {
+    console.log("🟡 Page reload disabled - changes saved without refresh");
+}
     }
     
     // Your existing code continues...
@@ -4881,10 +4932,14 @@ function saveCustomSettings() {
         const allEnabled = analyticsChecked && advertisingChecked && performanceChecked;
         localStorage.setItem("__user_cookie_consent__", allEnabled ? "granted" : "partial");
         
-        // Force reload
-        setTimeout(() => {
-            window.location.reload();
-        }, 300);
+      // Only reload if reload feature is enabled
+if (window.COOKIE_SETTINGS && window.COOKIE_SETTINGS.RELOAD_ENABLED) {
+    setTimeout(() => {
+        window.location.reload();
+    }, 300);
+} else {
+    console.log("🟡 Page reload disabled - changes saved without refresh");
+}
     }
     
     // Continue with your existing analytics code...
@@ -5552,4 +5607,3 @@ window.showBlockingSettings = function() {
 
   
 }
-
