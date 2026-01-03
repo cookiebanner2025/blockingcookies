@@ -1223,8 +1223,6 @@ clarityConfig: {
     // Microsoft UET Configuration
     uetConfig: {
         enabled: true,
-        defaultTagId: '137027166', // Fallback if auto-detection fails
-        autoDetectTagId: true,     // Try to detect UET tag ID automatically
         defaultConsent: 'denied',  // 'denied' or 'granted'
         enforceInEEA: true,        // Enforce consent mode in EEA countries
         msd: window.location.hostname // Add this line for Microsoft Domain handling
@@ -1888,9 +1886,7 @@ if (typeof window.uetq === 'undefined') {
         window.dataLayer.push({
             'event': 'uet_initialized',
             'uet_params': {
-                'msd': config.uetConfig.msd,
-                'tag_id': config.uetConfig.defaultTagId,
-                'auto_detect': config.uetConfig.autoDetectTagId
+                'msd': config.uetConfig.msd
             },
             'timestamp': new Date().toISOString()
         });
@@ -1952,14 +1948,15 @@ function setDefaultUetConsent() {
             ['LDU'] : ['GDPR']
     });
     
-    // Enhanced dataLayer push for UET consent
+    // ENHANCED: Fixed dataLayer push with asc: "D" for default state
     window.dataLayer.push({
         'event': 'uet_consent_default',
-        'consent_mode': {
+        'uet_consent': {  // CHANGED from 'consent_mode' to 'uet_consent'
             'ad_storage': consentState,
-            'analytics_storage': 'denied',
-            'ad_user_data': 'denied',
-            'ad_personalization': 'denied'
+            'status': 'default',
+            'src': 'default',
+            'asc': consentState === 'granted' ? 'G' : 'D',  // ADDED asc parameter
+            'timestamp': new Date().toISOString()
         },
         'uet_config': {
             'msd': config.uetConfig.msd || window.location.hostname,
