@@ -4745,20 +4745,68 @@ function initializeClarity(consentGranted) {
     // NEW: Setup banner triggers
     setupBannerTriggers();
     
-    // Setup cookie details toggles
-    document.querySelectorAll('.cookie-details-header').forEach(header => {
-        header.addEventListener('click', function() {
-            const content = this.nextElementSibling;
-            const toggle = this.querySelector('.toggle-details');
-            if (content.style.display === 'none') {
-                content.style.display = 'block';
-                toggle.textContent = '−';
+// Setup cookie details toggles - FIXED VERSION
+function setupCookieDetailToggles() {
+    console.log('Setting up cookie detail toggles...');
+    
+    document.querySelectorAll('.cookie-details-header').forEach((header, index) => {
+        // Get references
+        const content = header.nextElementSibling;
+        const toggle = header.querySelector('.toggle-details');
+        
+        // Ensure content is hidden initially if it has the right class
+        if (content && content.classList.contains('main-cookie-details-content')) {
+            content.style.display = 'none';
+        }
+        
+        // Remove any existing click handlers
+        const newHeader = header.cloneNode(true);
+        header.parentNode.replaceChild(newHeader, header);
+        
+        // Get fresh references after replacing
+        const freshContent = newHeader.nextElementSibling;
+        const freshToggle = newHeader.querySelector('.toggle-details');
+        
+        // Add click handler
+        newHeader.addEventListener('click', function(e) {
+            e.stopPropagation();
+            
+            if (freshContent.style.display === 'none' || freshContent.style.display === '') {
+                freshContent.style.display = 'block';
+                if (freshToggle) freshToggle.textContent = '−';
             } else {
-                content.style.display = 'none';
-                toggle.textContent = '+';
+                freshContent.style.display = 'none';
+                if (freshToggle) freshToggle.textContent = '+';
             }
         });
     });
+}
+
+// Initialize immediately
+setupCookieDetailToggles();
+
+// Also run when DOM changes
+const toggleObserver = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+        if (mutation.addedNodes.length) {
+            for (let node of mutation.addedNodes) {
+                if (node.nodeType === 1 && 
+                    (node.classList && node.classList.contains('cookie-details-header') || 
+                     node.querySelector && node.querySelector('.cookie-details-header'))) {
+                    setTimeout(setupCookieDetailToggles, 50);
+                    break;
+                }
+            }
+        }
+    });
+});
+
+if (document.body) {
+    toggleObserver.observe(document.body, { 
+        childList: true, 
+        subtree: true 
+    });
+}
     
 
 // Setup cookie value toggles for mobile
