@@ -686,6 +686,22 @@ window.cookieBlockingCleanup = window.cookieBlockingCleanup || {};
             "id", "fc", "rpb", "google_experiment_mod",
             // Google Marketing Platform
             "__gpi", "_gcl_au",
+
+                        // Microsoft Ads/Bing cookies (add to MARKETING_DATA.cookies array):
+            "_uetvid", "_uetsid", "_uetmsclkid", "MUID", "MUIDB", 
+            "_EDGE_V", "_EDGE_S", "SRCHD", "SRCHUID", "SRCHUSR",
+            "_SS", "ANON", "NONCE", "PPLState", "PPLStateC", 
+            "PPLStateD", "PPLStateE", "PPLStateF", "PPLStateG", 
+            "PPLStateH", "PPLStateI", "PPLStateJ", "PPLStateK", 
+            "PPLStateL", "PPLStateM", "PPLStateN", "PPLStateO", 
+            "PPLStateP", "PPLStateQ", "PPLStateR", "PPLStateS", 
+            "PPLStateT", "PPLStateU", "PPLStateV", "PPLStateW", 
+            "PPLStateX", "PPLStateY", "PPLStateZ", "SRCHHPGUSR",
+            "ENSEARCH", "ABTEST", "ANID", "AID", "WLS", "MC1",
+            "TOptOut", "MSPTC", "_RwBf", "_clck", "_clsk",
+            "MicrosoftApplicationsTelemetryDeviceId",
+            "MicrosoftApplicationsTelemetryFirstLaunchTime",
+                        
             // Facebook/Meta
             "_fbp", "_fbc", "fr", "xs", "c_user", "datr", "sb",
             "wd", "presence", "dpr", "locale", "pl", "act",
